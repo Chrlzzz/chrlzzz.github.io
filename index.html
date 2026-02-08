@@ -16,83 +16,86 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
         }
-        #no-btn { transition: all 0.2s ease; }
     </style>
 </head>
-<body class="bg-pink-50 flex items-center justify-center min-h-screen overflow-hidden px-4">
+<body class="bg-pink-50 flex items-center justify-center min-h-screen px-4">
 
-    <div class="text-center p-8 bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-pink-200 max-w-md w-full relative z-10">
+    <div id="main-card" class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-pink-200 max-w-md w-full relative z-10 transition-all duration-500">
         <div class="text-6xl mb-4 floating">💌</div>
-        <h1 class="text-4xl font-bold text-pink-600 mb-2 handwritten">Hi, My Love!</h1>
-        <p class="text-gray-500 font-semibold mb-6 tracking-wide">WILL YOU BE MY VALENTINE?</p>
+        <h1 class="text-4xl font-bold text-pink-600 mb-2 handwritten text-balance">Hello, My Love!</h1>
+        <p class="text-gray-500 font-semibold mb-6 tracking-wide uppercase text-sm">Will you be my Valentine?</p>
         
         <div class="bg-white rounded-2xl p-5 mb-6 text-left text-gray-700 space-y-3 border border-pink-100 shadow-inner">
             <div class="flex items-start gap-3">
-                <span>📍</span>
-                <p><b>Taal Bayview Bistro</b><br><span class="text-xs text-gray-500">I know you haven't eaten here yet! It's perfect for photos.</span></p>
+                <span class="text-lg">📍</span>
+                <p><b>Taal Bayview Bistro</b><br><span class="text-xs text-gray-500 italic">Since you haven't eaten here yet! It's perfect for photos.</span></p>
             </div>
             <div class="flex items-center gap-3">
-                <span>⏰</span>
-                <p><b>Feb 14, 10:00 AM</b></p>
+                <span class="text-lg">⏰</span>
+                <p><b>Feb 14, 2026 10:00 AM</b></p>
             </div>
             <div class="flex items-start gap-3">
-                <span>🚗</span>
-                <p><b>I'll pick you up at your house</b><br><span class="text-xs text-gray-500">Then we'll commute there together.</span></p>
+                <span class="text-lg">🚗</span>
+                <p><b>I'll pick you up at your house</b><br><span class="text-xs text-gray-500 italic">Then we'll commute there together.</span></p>
             </div>
             <div class="flex items-center gap-3">
-                <span>😋</span>
+                <span class="text-lg">😋</span>
                 <p><b>Bring yourself and your tummy!</b></p>
             </div>
         </div>
 
-        <p class="text-[10px] text-pink-400 mb-6 italic uppercase tracking-widest">Respond quickly so I can ask Tita's permission! 🫡</p>
+        <p class="text-[12px] text-pink-400 mb-6 italic uppercase tracking-widest font-bold">Respond quickly so I can ask Tita's permission! 🫡</p>
 
-        <div class="flex justify-center items-center gap-4 h-16 relative" id="button-container">
-            <button onclick="celebrate()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-10 rounded-full shadow-lg z-30 transform transition hover:scale-110 active:scale-95">
-                YES! 💖
-            </button>
-            <button id="no-btn" onmouseover="moveButton()" class="relative bg-gray-100 text-gray-400 font-bold py-3 px-10 rounded-full shadow-sm z-20">
-                No
+        <div class="flex justify-center items-center h-16" id="button-container">
+            <button onclick="celebrate()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95 text-lg">
+                YES, I'D LOVE TO! 💖
             </button>
         </div>
 
-        <div id="success-message" class="hidden mt-8">
-            <h2 class="text-3xl font-bold text-pink-600 handwritten animate-pulse">YAY! See you, Baby! 🌹</h2>
+        <div id="success-message" class="hidden mt-4 pt-4 border-t border-pink-100">
+            <h2 class="text-3xl font-bold text-pink-600 handwritten animate-pulse">YAY! See you, Bebe! 🌹</h2>
+            <p class="text-gray-500 text-sm mt-2">I'm getting Tita's permission now! 💖</p>
         </div>
     </div>
 
     <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-10 left-10 text-pink-200 text-6xl opacity-50">♥</div>
-        <div class="absolute bottom-10 right-10 text-pink-200 text-6xl opacity-50">♥</div>
+        <div class="absolute top-10 left-10 text-pink-200 text-6xl opacity-30">♥</div>
+        <div class="absolute bottom-10 right-10 text-pink-200 text-6xl opacity-30">♥</div>
+        <div class="absolute top-1/4 right-5 text-pink-100 text-4xl opacity-40">🌸</div>
     </div>
 
     <script>
-        function moveButton() {
-            const btn = document.getElementById('no-btn');
-            btn.style.position = 'absolute';
-
-            const maxX = window.innerWidth - btn.clientWidth;
-            const maxY = window.innerHeight - btn.clientHeight;
-            
-            const randomX = Math.floor(Math.random() * (maxX - 20) + 10);
-            const randomY = Math.floor(Math.random() * (maxY - 20) + 10);
-            
-            btn.style.left = randomX + 'px';
-            btn.style.top = randomY + 'px';
-        }
-
         function celebrate() {
-            // Trigger Confetti
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ec4899', '#f472b6', '#fbcfe8']
-            });
+            // Trigger Confetti Multiple Times for effect
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
 
-            document.getElementById('button-container').style.display = 'none';
+            (function frame() {
+              confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#ec4899', '#f472b6']
+              });
+              confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#ec4899', '#f472b6']
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+
+            // Visual UI Changes
+            document.getElementById('button-container').classList.add('hidden');
             document.getElementById('success-message').classList.remove('hidden');
-        </div>
+            document.getElementById('main-card').classList.add('border-pink-500');
+        }
     </script>
 </body>
 </html>
