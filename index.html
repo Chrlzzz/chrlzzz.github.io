@@ -3,43 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Charls Gerald | Electronics Engineer</title>
+    <title>A Special Message for Alliah ❤️</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .floating { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        #no-btn { position: absolute; transition: all 0.2s ease; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans">
+<body class="bg-pink-50 flex items-center justify-center min-h-screen overflow-hidden font-sans">
 
-    <nav class="p-6 bg-white shadow-sm flex justify-between items-center">
-        <h1 class="text-xl font-bold tracking-tight text-blue-600">CGC.</h1>
-        <div class="space-x-6">
-            <a href="#projects" class="hover:text-blue-500">Projects</a>
-            <a href="#skills" class="hover:text-blue-500">Skills</a>
+    <div class="text-center p-8 bg-white rounded-3xl shadow-2xl border-4 border-pink-200 max-w-md w-full relative z-10">
+        <div class="text-6xl mb-4 floating">💌</div>
+        <h1 class="text-3xl font-bold text-pink-600 mb-2">Hi, My Love!</h1>
+        <p class="text-gray-600 font-medium mb-6">Will you be my Valentine?</p>
+        
+        <div class="bg-pink-50 rounded-xl p-4 mb-6 text-left text-sm text-gray-700 space-y-2 border border-pink-100">
+            <p>📍 <b>Where:</b> Taal Bayview Bistro (I know you haven't eaten here yet! It has great view spots for photos 📸)</p>
+            <p>⏰ <b>When:</b> Feb 14, 2026 10:00 AM</p>
+            <p>🚗 <b>The Plan:</b> I'll pick you up at your house, then we'll commute together.</p>
+            <p>😋 <b>Bring:</b> Just yourself and your hungry tummy!</p>
         </div>
-    </nav>
 
-    <header class="max-w-5xl mx-auto py-20 px-6 text-center">
-        <h2 class="text-5xl font-extrabold mb-4">Charls Gerald D. Correa</h2>
-        <p class="text-xl text-gray-600 mb-8">Electronics Engineering Student | Microelectronics & VLSI</p>
-        <a href="mailto:your-email@example.com" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">Get In Touch</a>
-    </header>
+        <p class="text-xs text-pink-400 mb-6 italic text-center">Please respond immediately so I can ask Tita's for permission! 🫡</p>
 
-    <section id="projects" class="max-w-5xl mx-auto py-16 px-6">
-        <h3 class="text-3xl font-bold mb-10 border-b-2 border-blue-100 pb-2">Technical Projects</h3>
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex justify-center gap-4 h-12 relative" id="button-container">
+            <button onclick="celebrate()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-full shadow-lg z-20">
+                YES! 💖
+            </button>
+            <button id="no-btn" onmouseover="moveButton()" class="bg-gray-200 text-gray-500 font-bold py-2 px-8 rounded-full shadow-md">
+                No
+            </button>
+        </div>
+
+        <div id="success-message" class="hidden mt-8">
+            <h2 class="text-2xl font-bold text-pink-600 animate-bounce">YAY! See you on the 14th! 🌹</h2>
+            <p class="text-gray-500 text-sm mt-2">I'm going to talk to Tita right now. ❤️</p>
+        </div>
+    </div>
+
+    <div class="absolute inset-0 pointer-events-none opacity-20">
+        <span class="absolute top-10 left-10 text-4xl">❤️</span>
+        <span class="absolute bottom-20 right-20 text-4xl">💖</span>
+        <span class="absolute top-1/2 left-1/4 text-2xl">✨</span>
+    </div>
+
+    <script>
+        function moveButton() {
+            const btn = document.getElementById('no-btn');
+            const container = document.body;
             
-            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <span class="text-blue-600 font-bold text-sm uppercase">Thesis</span>
-                <h4 class="text-xl font-bold mt-2">SCALEeat</h4>
-                <p class="mt-2 text-gray-600">Smart food scale for automated macronutrient estimation using computer vision and load cells.</p>
-            </div>
+            // Generate random coordinates within the screen bounds
+            const maxX = container.clientWidth - btn.clientWidth;
+            const maxY = container.clientHeight - btn.clientHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            btn.style.left = randomX + 'px';
+            btn.style.top = randomY + 'px';
+        }
 
-            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <span class="text-blue-600 font-bold text-sm uppercase">Robotics</span>
-                <h4 class="text-xl font-bold mt-2">10-inch Agricultural Drone</h4>
-                <p class="mt-2 text-gray-600">Design and deployment of a heavy-lift drone with a custom payload release mechanism.</p>
-            </div>
-
-        </div>
-    </section>
-
+        function celebrate() {
+            document.getElementById('button-container').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+            // Logic to create confetti could go here!
+        }
+    </script>
 </body>
 </html>
