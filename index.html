@@ -3,101 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Special Message for Alliah 💖</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <title>Splunk SPLK-5001 Certification Prep</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <style>
-        body { font-family: 'Quicksand', sans-serif; }
-        .handwritten { font-family: 'Dancing Script', cursive; }
-        .floating { animation: float 3s ease-in-out infinite; }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
+        .option-btn:hover:not(:disabled) { background-color: #f3f4f6; }
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
     </style>
 </head>
-<body class="bg-pink-50 flex items-center justify-center min-h-screen px-4">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-900">
+    <div id="app" class="max-w-3xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">SPLK-5001 Practice Quiz</h1>
+            <p class="text-gray-600">Splunk Cloud Certified Admin & Security Prep</p>
+        </header>
 
-    <div id="main-card" class="text-center p-8 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border-2 border-pink-200 max-w-md w-full relative z-10 transition-all duration-500">
-        <div class="text-6xl mb-4 floating">💌</div>
-        <h1 class="text-4xl font-bold text-pink-600 mb-2 handwritten text-balance">Hello, My Love!</h1>
-        <p class="text-gray-500 font-semibold mb-6 tracking-wide uppercase text-sm">Will you be my Valentine?</p>
-        
-        <div class="bg-white rounded-2xl p-5 mb-6 text-left text-gray-700 space-y-3 border border-pink-100 shadow-inner">
-            <div class="flex items-start gap-3">
-                <span class="text-lg">📍</span>
-                <p><b>Taal Bayview Bistro</b><br><span class="text-xs text-gray-500 italic">Since you haven't eaten here yet! Plus it has good spots and they are offeriing buffet this Valentine's.</span></p>
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
+            <div class="mb-6">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold mb-2">Ready to start?</h2>
+                <p class="text-gray-500">66 Questions extracted from the SPLK 5001 document.</p>
             </div>
-            <div class="flex items-center gap-3">
-                <span class="text-lg">⏰</span>
-                <p><b>Feb 14, 2026 10:00 AM</b></p>
-            </div>
-            <div class="flex items-start gap-3">
-                <span class="text-lg">🚗</span>
-                <p><b>I'll pick you up at your house</b><br><span class="text-xs text-gray-500 italic">Then we'll commute there together.</span></p>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="text-lg">😋</span>
-                <p><b>Bring yourself and your tummy!</b></p>
-            </div>
-        </div>
-
-        <p class="text-[14px] text-pink-400 mb-6 italic uppercase tracking-widest font-bold">Respond quickly so I can ask Tita's permission! 🫡</p>
-
-        <div class="flex justify-center items-center h-16" id="button-container">
-            <button onclick="celebrate()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95 text-lg">
-                YES, I'D LOVE TO! 💖
+            <button onclick="quiz.start()" class="w-full sm:w-auto px-12 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
+                Start Quiz
             </button>
         </div>
 
-        <div id="success-message" class="hidden mt-4 pt-4 border-t border-pink-100">
-            <h2 class="text-3xl font-bold text-pink-600 handwritten animate-pulse">YAY! See you, Bebe! 🌹</h2>
-            <p class="text-gray-500 text-sm mt-2">I'm getting Tita's permission now! 💖</p>
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden space-y-6 fade-in">
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-xl shadow-sm p-4">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-500">Question <span id="current-idx">1</span> of 66</span>
+                    <span class="text-sm font-bold text-blue-600" id="score-display">Score: 0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                <p id="question-text" class="text-lg font-medium text-gray-800 mb-8"></p>
+                
+                <div id="options-container" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+
+                <div id="feedback" class="mt-8 hidden">
+                    <div id="feedback-msg" class="p-4 rounded-xl font-medium mb-4"></div>
+                    <button id="next-btn" onclick="quiz.next()" class="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-all shadow-md">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
+            <h2 class="text-3xl font-bold mb-4">Quiz Complete!</h2>
+            <div class="text-6xl font-extrabold text-blue-600 mb-4" id="final-score">0%</div>
+            <p id="final-stats" class="text-gray-600 mb-8"></p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="quiz.reset()" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all">
+                    Try Again
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="absolute top-10 left-10 text-pink-200 text-6xl opacity-30">💖</div>
-        <div class="absolute bottom-10 right-10 text-pink-200 text-6xl opacity-30">💖</div>
-        <div class="absolute top-1/4 right-5 text-pink-100 text-4xl opacity-40">🌸</div>
-    </div>
-
     <script>
-        function celebrate() {
-            // Trigger Confetti Multiple Times for effect
-            var duration = 3 * 1000;
-            var end = Date.now() + duration;
+        const questions = [
+            { q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of implementing the new process or solution that was selected?", a: "C", o: ["Security Architect", "SOC Manager", "Security Engineer", "Security Analyst"] },
+            { q: "Which of the following is a correct Splunk search that will return results in the most performant way?", a: "A", o: ["index=foo host=i-478619733 | stats range(_time) as duration by src_ip | bin duration span=5min | stats count by duration, host", "stats range(_time) as duration by src_ip | index=foo host=i-478619733 | bin duration span=5min | stats count by duration, host", "index=foo host=i-478619733 | transaction src_ip | stats count by host", "index=foo | transaction src_ip | stats count by host | search host=i-478619733"] },
+            { q: "There are many resources for assisting with SPL and configuration questions. Which of the following resources feature community-sourced answers?", a: "A", o: ["Splunk Answers", "Splunk Lantern", "Splunk Guidebook", "Splunk Documentation"] },
+            { q: "A successful Continuous Monitoring initiative involves the entire organization. When an analyst discovers the need for more context or additional information, perhaps from additional data sources or altered correlation rules, to what role would this request generally escalate?", a: "C", o: ["SOC Manager", "Security Analyst", "Security Engineer", "Security Architect"] },
+            { q: "Splunk Enterprise Security has numerous frameworks to create correlations. Which framework raises the threat profile of individuals or assets to allow identification of people or devices that perform an unusual amount of suspicious activities?", a: "B", o: ["Threat Intelligence Framework", "Risk Framework", "Notable Event Framework", "Asset and Identity Framework"] },
+            { q: "While the top command is utilized to find the most common values, which Splunk command returns the least common values?", a: "C", o: ["least", "uncommon", "rare", "base"] },
+            { q: "The Lockheed Martin Cyber Kill Chain® breaks an attack lifecycle into several stages. A threat actor modified the registry to ensure malware automatically runs at boot. Which phase is this?", a: "D", o: ["Act on Objectives", "Exploitation", "Delivery", "Installation"] },
+            { q: "A Risk Notable Event was determined to be a false positive. What metric defines the time between alert creation and close of the event?", a: "A", o: ["MTTR (Mean Time to Respond)", "MTBF (Mean Time Between Failures)", "MTTA (Mean Time to Acknowledge)", "MTTD (Mean Time to Detect)"] },
+            { q: "Which Splunk command dynamically extracts additional fields as part of a Search pipeline at search time?", a: "A", o: ["rex", "fields", "regex", "eval"] },
+            { q: "Which of the following is considered Personal Data under GDPR?", a: "B", o: ["The birth date of an unidentified user.", "An individual's address including their first and last name.", "The name of a deceased individual.", "A company's registration number."] },
+            { q: "What goal of an APT group aims to disrupt or damage on behalf of a cause?", a: "A", o: ["Hacktivism", "Cyber espionage", "Financial gain", "Prestige"] },
+            { q: "A CTI team produces a report detailing a specific threat actor's typical behaviors and intent. This is what type of intelligence?", a: "D", o: ["Operational", "Executive", "Tactical", "Strategic"] },
+            { q: "An analyst building a search to examine Windows XML Event Logs sees no extracted fields. What is the most likely cause?", a: "C", o: ["Analyst lacks proper role", "Improperly parsed new data", "Analyst did not add extract command", "Wrong search mode"] },
+            { q: "In RBA, a user account that generates multiple risk observations is referred to by Splunk as what type of entity?", a: "B", o: ["Risk Factor", "Risk Object", "Risk Analysis", "Risk Index"] },
+            { q: "Which SPL command can be used to run a subsearch across every field in a wildcard field list?", a: "A", o: ["foreach", "rex", "makeresults", "transaction"] },
+            { q: "How are Notable Events configured in Splunk Enterprise Security?", a: "D", o: ["During investigation", "Part of an audit", "Adaptive Response Action in regular search", "Adaptive Response Action in correlation search"] },
+            { q: "In lateral movement investigation from one Windows host to another, where is the IP of the host the attacker is moving FROM (source) stored according to CIM?", a: "D", o: ["host", "dest", "src_nt_host", "src_ip"] },
+            { q: "Which data source is used to discover unusual communication within an organization's network?", a: "B", o: ["EDS", "Net Flow", "Email", "IAM"] },
+            { q: "Which SPL pipeline filters for users with over 1000 occurrences and sorts them?", a: "B", o: ["sort by user | where count > 1000", "stats count by user | where count > 1000 | sort - count", "| top user", "stats count(user) | sort - count | where count > 1000"] },
+            { q: "Which feature of Splunk ES provides context for correlation search mapping to specific guidelines like NIST 800-171?", a: "C", o: ["Comments", "Moles", "Annotations", "Framework mapping"] },
+            { q: "Which SPL command creates a temporary table containing failed login counts by IP?", a: "C", o: ["eval count as failed_attempts", "transaction count as failed_attempts", "stats count as failed_attempts by src_ip", "sum count as failed_attempts"] },
+            { q: "In which data model would an analyst find the field 'file_acl'?", a: "D", o: ["Malware", "Alerts", "Vulnerabilities", "Endpoint"] },
+            { q: "Analyzing users who rarely log in (Suspicious activity) is an example of what technique?", a: "A", o: ["Least Frequency of Occurrence Analysis", "Co-Occurrence Analysis", "Time Series Analysis", "Outlier Frequency Analysis"] },
+            { q: "What is the main difference between hypothesis-driven and data-driven Threat Hunting?", a: "B", o: ["Data-driven requires more data", "Data-driven uncovers within existing sets; Hypothesis begins with suspected activity", "Hypothesis is for new data only", "Hypothesis is within existing sets; Data-driven begins with suspected activity"] },
+            { q: "Which ES dashboard could be used as a starting point to create a custom typosquatting dashboard?", a: "D", o: ["IAM Activity", "Malware Center", "Access Anomalies", "New Domain Analysis"] },
+            { q: "What is the main difference between DDoS and DoS?", a: "C", o: ["DDoS is physical", "DoS is multiple sources", "DDoS uses multiple sources for one target; DoS is one source", "DDoS targets multiple systems"] },
+            { q: "A briefing to the CISO detailing the threat landscape is what type of intelligence?", a: "B", o: ["Tactical", "Strategic", "Operational", "Executive"] },
+            { q: "Thousands of failed logins using credentials from recent breaches is an example of:", a: "D", o: ["Credential sniffing", "Password cracking", "Password spraying", "Credential stuffing"] },
+            { q: "Who is typically in charge of DESIGNING a new process and selecting the tools for it?", a: "C", o: ["SOC Manager", "Security Engineer", "Security Architect", "Security Analyst"] },
+            { q: "Which SPL finds relevant events across 'src' OR 'machine_name' (if src is empty)?", a: "A", o: ["eval src = coalesce(src, machine_name)", "eval src = src + machine_name", "eval src = src. machine_name", "eval src = tostring(machine_name)"] },
+            { q: "Which command starts a pipeline to create your own test data instead of using indexed data?", a: "A", o: ["makeresults", "rename", "eval", "stats"] },
+            { q: "Attacker devises profile -> creates unique email -> victim opens -> C2 established. This is an example of a:", a: "D", o: ["Tactic", "Policy", "Procedure", "Technique"] },
+            { q: "Which of the following is a best practice for performant Splunk searches?", a: "C", o: ["Use transaction often", "Aggregating before streaming", "Utilize specific fields (fields command)", "Use multiple wildcards"] },
+            { q: "Which app delivers security content/detections on an ongoing basis for ES and SOAR?", a: "B", o: ["SSE", "ESCU", "Threat Hunting", "InfoSec"] },
+            { q: "Which search command allows matching an exact term including minor breakers (periods/underscores)?", a: "D", o: ["CASE()", "LIKE()", "FORMAT()", "TERM()"] },
+            { q: "Which field is automatically added when assets are properly defined and enabled in ES?", a: "C", o: ["asset_category", "src_ip", "src_category", "user"] },
+            { q: "IDS signature alerts on server logins from 6PM-6AM. If no alerts occur in this window and signature is correct, this is:", a: "A", o: ["True Negative", "True Positive", "False Negative", "False Positive"] },
+            { q: "Which is NOT a component of the Splunk Security Content library (ESCU, SSE)?", a: "D", o: ["Dashboards", "Reports", "Correlation searches", "Validated architectures"] },
+            { q: "Which function category is NOT valid with the 'eval' command?", a: "D", o: ["JSON functions", "Text functions", "Comparison functions", "Threat functions"] },
+            { q: "Which of the following is a TACTIC (not technique)?", a: "A", o: ["Gathering information about a target", "Establishing persistence via scheduled task", "Phishing email for access", "Escalating privileges via UAC bypass"] },
+            { q: "Which stage of continuous monitoring involves adding data and creating detections?", a: "A", o: ["Implement and Collect", "Establish and Architect", "Respond and Review", "Analyze and Report"] },
+            { q: "Attacker brute-forces system. No alerts because search only looked at Windows data (missed Linux). This is:", a: "C", o: ["True Positive", "True Negative", "False Negative", "False Positive"] },
+            { q: "IDS alert shows suspicious traffic to malicious IP. Which ES data model shows which process initiated it?", a: "A", o: ["Endpoint", "Authentication", "Network traffic", "Web"] },
+            { q: "Which is a best practice for searching?", a: "C", o: ["Streaming after aggregating", "Raw word searches with wildcards", "Limit fields using the table command", "Searching over All Time"] },
+            { q: "What mode must 'rex' be in to replace defined values with 'X'?", a: "A", o: ["sed", "replace", "mask", "substitute"] },
+            { q: "Which use case is best suited for a Splunk SOAR Playbook?", a: "D", o: ["Forming hypothesis", "Visualizing datasets", "Creating field extractions", "Containment action on compromised host"] },
+            { q: "Which of the following is NOT considered an Indicator of Compromise (IOC)?", a: "D", o: ["Specific phishing domain", "Specific IP in attack", "Specific file hash", "Specific password for account"] },
+            { q: "In the Authentication Data Model, which field represents the user who INITIATED privilege escalation?", a: "C", o: ["username", "src_user_id", "src_user", "dest_user"] },
+            { q: "List: 1. Exploiting remote service, 2. Lateral movement, 3. Use EternalBlue. What order is this?", a: "A", o: ["Tactic, Technique, Procedure", "Procedure, Technique, Tactic", "Technique, Tactic, Procedure", "Tactic, Procedure, Technique"] },
+            { q: "Analyst investigates Notable Event. Logs/artifacts are missing. What disposition should be assigned?", a: "D", o: ["Benign Positive", "False Negative", "True Positive", "Other"] },
+            { q: "Server processed 'POST /cgi-bin/shutdown/' before shutting down. Likely attack?", a: "B", o: ["DDoS", "DoS", "Database injection", "XSS"] },
+            { q: "Which ES framework provides automatic context/correlation to fields in raw data?", a: "A", o: ["Asset and Identity", "Threat Intelligence", "Adaptive Response", "Risk"] },
+            { q: "Which framework runs preconfigured actions or integrates with external apps?", a: "D", o: ["Asset and Identity", "Notable Event", "Threat Intelligence", "Adaptive Response"] },
+            { q: "Which feature allows mapping MITRE ATT&CK or Kill Chain to Correlation Search results?", a: "A", o: ["Annotations", "Playbooks", "Comments", "Enrichments"] },
+            { q: "What is the primary benefit of using CIM in Splunk?", a: "A", o: ["Easier correlation of different sources", "Improved search performance on raw data", "Enables advanced ML", "Automatically blocks threats"] },
+            { q: "In which framework are TTPs categorized?", a: "D", o: ["NIST 800-53", "ISO 27000", "CIS18", "MITRE ATT&CK"] },
+            { q: "Hunter tests hypothesis that Cobalt Strike is present. No evidence found. Outcome?", a: "D", o: ["Successful because not proven", "Failed because not proven", "Failed because no malicious activity found", "Successful in providing evidence tactic is NOT present"] },
+            { q: "Server sending gigabytes more than normal to one IP with no incoming increase. Likely representing?", a: "A", o: ["Data exfiltration", "Network reconnaissance", "Data infiltration", "Lateral movement"] },
+            { q: "In which phase of Continuous Monitoring cycle are improvements suggested?", a: "C", o: ["Define and Predict", "Establish and Architect", "Analyze and Report", "Implement and Collect"] },
+            { q: "Analyst isn't sure all potential data sources are utilized. What should she use for analysis?", a: "B", o: ["Splunk ITSI", "Security Essentials", "SOAR", "Intelligence Management"] },
+            { q: "Why should an executable running from C:\\Windows\\Temp be investigated?", a: "D", o: ["Not owned by user", "Flagged as non-executable", "Contains system page file", "World writable place to stage malware"] },
+            { q: "Where to visualize threat objects and chronological risk events for a Risk Object?", a: "D", o: ["Adaptive Response action", "Workflow action", "Risk Analysis dashboard", "Click risk event count for Timeline"] },
+            { q: "Analyst finds raw logs have info that helps analysis. What should they ask the engineer for?", a: "A", o: ["Create a field extraction", "Add info to risk message", "Create another detection", "Allowlist more events"] },
+            { q: "What device typically sits at perimeter to detect C2 and suspicious traffic?", a: "D", o: ["Host-based firewall", "Web proxy", "EDR", "IDS"] },
+            { q: "Server access log has millions of entries of the same GET request. Likely attack?", a: "B", o: ["DoS", "DDoS", "XSS", "Database Injection"] },
+            { q: "According to David Bianco's Pyramid of Pain, which indicator is LEAST effective in monitoring?", a: "D", o: ["Domain names", "TTPs", "Network artifacts", "Hash values"] }
+        ];
 
-            (function frame() {
-              confetti({
-                particleCount: 3,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: ['#ec4899', '#f472b6']
-              });
-              confetti({
-                particleCount: 3,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: ['#ec4899', '#f472b6']
-              });
+        class Quiz {
+            constructor(data) {
+                this.questions = data;
+                this.currentIdx = 0;
+                this.score = 0;
+                this.shuffled = [];
+                this.answered = false;
+            }
 
-              if (Date.now() < end) {
-                requestAnimationFrame(frame);
-              }
-            }());
+            start() {
+                this.shuffled = [...this.questions].sort(() => Math.random() - 0.5);
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                this.render();
+            }
 
-            // Visual UI Changes
-            document.getElementById('button-container').classList.add('hidden');
-            document.getElementById('success-message').classList.remove('hidden');
-            document.getElementById('main-card').classList.add('border-pink-500');
+            render() {
+                this.answered = false;
+                const q = this.shuffled[this.currentIdx];
+                document.getElementById('current-idx').innerText = this.currentIdx + 1;
+                document.getElementById('question-text').innerText = q.q;
+                
+                const container = document.getElementById('options-container');
+                container.innerHTML = '';
+                
+                q.o.forEach((opt, i) => {
+                    const letter = String.fromCharCode(65 + i);
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn w-full text-left p-4 border-2 border-gray-200 rounded-xl transition-all flex items-start space-x-3";
+                    btn.innerHTML = `<span class="bg-gray-100 px-2 py-0.5 rounded text-sm font-bold text-gray-500">${letter}</span> <span class="flex-1">${opt}</span>`;
+                    btn.onclick = () => this.check(letter, btn);
+                    container.appendChild(btn);
+                });
+
+                document.getElementById('feedback').classList.add('hidden');
+                this.updateProgress();
+            }
+
+            check(choice, btn) {
+                if (this.answered) return;
+                this.answered = true;
+                
+                const correctLetter = this.shuffled[this.currentIdx].a;
+                const buttons = document.querySelectorAll('.option-btn');
+                
+                buttons.forEach(b => {
+                    b.disabled = true;
+                    if (b.innerText.startsWith(correctLetter)) {
+                        b.classList.add('correct');
+                    }
+                });
+
+                const feedbackMsg = document.getElementById('feedback-msg');
+                if (choice === correctLetter) {
+                    this.score++;
+                    feedbackMsg.innerText = "Correct! Well done.";
+                    feedbackMsg.className = "p-4 rounded-xl font-medium mb-4 bg-green-100 text-green-800";
+                } else {
+                    btn.classList.add('wrong');
+                    feedbackMsg.innerText = `Incorrect. The correct answer was ${correctLetter}.`;
+                    feedbackMsg.className = "p-4 rounded-xl font-medium mb-4 bg-red-100 text-red-800";
+                }
+
+                document.getElementById('feedback').classList.remove('hidden');
+                this.updateScore();
+            }
+
+            next() {
+                this.currentIdx++;
+                if (this.currentIdx < this.shuffled.length) {
+                    this.render();
+                } else {
+                    this.showResults();
+                }
+            }
+
+            updateProgress() {
+                const percent = (this.currentIdx / this.shuffled.length) * 100;
+                document.getElementById('progress-bar').style.width = percent + '%';
+            }
+
+            updateScore() {
+                const totalAttempted = this.currentIdx + 1;
+                const percent = Math.round((this.score / totalAttempted) * 100);
+                document.getElementById('score-display').innerText = `Score: ${percent}%`;
+            }
+
+            showResults() {
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+                const percent = Math.round((this.score / this.shuffled.length) * 100);
+                document.getElementById('final-score').innerText = percent + '%';
+                document.getElementById('final-stats').innerText = `You got ${this.score} out of ${this.shuffled.length} questions correct.`;
+            }
+
+            reset() {
+                this.currentIdx = 0;
+                this.score = 0;
+                document.getElementById('result-screen').classList.add('hidden');
+                this.start();
+            }
         }
+
+        const quiz = new Quiz(questions);
     </script>
 </body>
 </html>
-
-
