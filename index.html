@@ -690,8 +690,8 @@ const masterQuestions = [
   {
     q: "An organization is using Risk-Based Alerting (RBA). During the past few days, a user account generated multiple risk observations. Splunk refers to this account as what type of entity?",
     opts: ["Risk Factor","Risk Index","Risk Analysis","Risk Object"],
-    ans: 1,
-    exp: "In Splunk ES Risk-Based Alerting, entities (users, hosts, IPs) that accumulate risk scores are tracked in the risk index. The answer key identifies this as the Risk Index — the location where risk data for these entities is stored and referenced."
+    ans: 3,
+    exp: "Risk object is the answer according to splunk since it is the term for the thing that is monitored or the one where it's risk is scored."
   },
   {
     q: "When searching in Splunk, which of the following SPL commands can be used to run a subsearch across every field in a wildcard field list?",
@@ -833,8 +833,8 @@ const masterQuestions = [
   {
     q: "What is the following step-by-step description an example of?\n\n1. The attacker devises a non-default beacon profile with Cobalt Strike and embeds this within a document.\n2. The attacker creates a unique email with the malicious document based on extensive research about their target.\n3. When the victim opens this document, a C2 channel is established to the attacker's temporary infrastructure on a compromised website.",
     opts: ["Tactic","Policy","Procedure","Technique"],
-    ans: 3,
-    exp: "In MITRE ATT&CK, a Technique describes a specific technical method an adversary uses. This detailed, step-by-step implementation using specific tools (Cobalt Strike) and methods describes a Technique. A Tactic is a broader goal category, and a Procedure would be an even more granular real-world implementation."
+    ans: 2,
+    exp: "This detailed, step-by-step implementation using specific tools (Cobalt Strike) and methods describes a Procedure. A Tactic is a broader goal category, and a Procedure would be an even more granular real-world implementation."
   },
   {
     q: "Which of the following is a best practice when creating performant searches within Splunk?",
@@ -965,7 +965,7 @@ const masterQuestions = [
       "Technique, Tactic, Procedure",
       "Tactic, Procedure, Technique"
     ],
-    ans: 0,
+    ans: 2,
     exp: "Item 1 ('Exploiting a remote service') is a Technique — a specific method. Item 2 ('Lateral movement') is a Tactic — a high-level goal. Item 3 ('Use EternalBlue to exploit a remote SMB server') is a Procedure — a specific, named real-world implementation. Order: Technique, Tactic, Procedure = Answer A."
   },
   {
