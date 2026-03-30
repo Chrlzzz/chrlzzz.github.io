@@ -1,259 +1,1139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Splunk SPLK-5001 Certification Prep</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .option-btn:hover:not(:disabled) { background-color: #f3f4f6; }
-        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534; }
-        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SPLK-5001 Practice Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0a0d14;
+    --panel: #0f1420;
+    --border: #1e2d45;
+    --accent: #00c8ff;
+    --accent2: #ff6b35;
+    --correct: #00e676;
+    --wrong: #ff1744;
+    --text: #c9d8e8;
+    --muted: #5a7291;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Rajdhani', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Animated grid bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 820px;
+    padding: 24px 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+  .badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    display: inline-block;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+    opacity: 0.8;
+  }
+  header h1 {
+    font-size: clamp(26px, 5vw, 38px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    text-transform: uppercase;
+  }
+  header h1 span { color: var(--accent); }
+  .subtitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--border);
+    height: 3px;
+    border-radius: 2px;
+    margin: 20px 0 8px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #0066ff);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .progress-meta span { color: var(--accent); }
+
+  /* ── QUESTION CARD ── */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 28px 22px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeSlide 0.3s ease;
+  }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .q-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+  .q-text {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    color: #e4eef8;
+    margin-bottom: 22px;
+  }
+
+  /* code-like block inside question */
+  .q-text code {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12px;
+    background: rgba(0,200,255,0.05);
+    border-left: 2px solid var(--accent);
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+    color: #8ecfff;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    background: rgba(255,255,255,0.01);
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .option:hover:not(.locked) {
+    border-color: var(--accent);
+    background: rgba(0,200,255,0.05);
+    transform: translateX(3px);
+  }
+  .option-letter {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 18px;
+    margin-top: 2px;
+    transition: color 0.15s;
+  }
+  .option.selected .option-letter { color: var(--accent); }
+
+  .option.correct {
+    border-color: var(--correct);
+    background: rgba(0,230,118,0.07);
+  }
+  .option.correct .option-letter { color: var(--correct); }
+
+  .option.wrong {
+    border-color: var(--wrong);
+    background: rgba(255,23,68,0.07);
+  }
+  .option.wrong .option-letter { color: var(--wrong); }
+
+  .option.locked { cursor: default; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: fadeSlide 0.2s ease;
+  }
+  .feedback.correct-fb {
+    display: block;
+    background: rgba(0,230,118,0.08);
+    border: 1px solid rgba(0,230,118,0.3);
+    color: #9effd1;
+  }
+  .feedback.correct-fb::before {
+    content: '✔  CORRECT — ';
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--correct);
+    font-weight: 700;
+  }
+  .feedback.wrong-fb {
+    display: block;
+    background: rgba(255,23,68,0.08);
+    border: 1px solid rgba(255,23,68,0.3);
+    color: #ffb3be;
+  }
+  .feedback.wrong-fb::before {
+    content: '✘  INCORRECT — ';
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--wrong);
+    font-weight: 700;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 22px;
+    gap: 12px;
+  }
+  .btn {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 11px 26px;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+  }
+  .btn:hover { background: var(--accent); color: #000; transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
+  .btn.primary { background: var(--accent); color: #000; }
+  .btn.primary:hover { background: #33d4ff; }
+  .btn-skip {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    letter-spacing: 1px;
+    padding: 0;
+  }
+  .btn-skip:hover { color: var(--text); }
+
+  /* ── RESULTS ── */
+  #results-screen {
+    display: none;
+    text-align: center;
+    animation: fadeSlide 0.4s ease;
+  }
+  .score-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 32px auto 20px;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring circle { fill: none; stroke-width: 10; }
+  .score-ring .bg-c { stroke: var(--border); }
+  .score-ring .fg-c {
+    stroke: var(--correct);
+    stroke-dasharray: 0 440;
+    transition: stroke-dasharray 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  .score-ring.bad .fg-c { stroke: var(--accent2); }
+  .score-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .score-pct {
+    font-family: var(--mono);
+    font-size: 36px;
+    color: #fff;
+    line-height: 1;
+  }
+  .score-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .result-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .result-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .stat-box {
+    padding: 16px 24px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    min-width: 110px;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .stat-val.g { color: var(--correct); }
+  .stat-val.r { color: var(--wrong); }
+  .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+
+  /* review list */
+  .review-list { text-align: left; margin-top: 28px; }
+  .review-item {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+  }
+  .review-item.r-correct { border-color: rgba(0,230,118,0.25); }
+  .review-item.r-wrong   { border-color: rgba(255,23,68,0.25); }
+  .review-q-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .review-item.r-correct .review-q-num { color: var(--correct); }
+  .review-item.r-wrong   .review-q-num { color: var(--wrong); }
+  .review-q-text { color: #cde; margin-bottom: 8px; font-weight: 600; }
+  .review-answers { font-family: var(--mono); font-size: 12px; }
+  .review-answers .ry { color: var(--text); }
+  .review-answers .rc { color: var(--correct); }
+
+  /* scroll to top */
+  @media (max-width: 600px) {
+    .card { padding: 20px 16px; }
+    .btn  { padding: 10px 18px; font-size: 13px; }
+  }
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans text-gray-900">
-    <div id="app" class="max-w-3xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-slate-800 mb-2">SPLK-5001 Practice Quiz</h1>
-            <p class="text-gray-600">Splunk Cloud Certified Admin & Security Prep</p>
-        </header>
+<body>
+<div class="wrapper">
+  <header>
+    <div class="badge">Splunk Certification Prep</div>
+    <h1><span>SPLK</span>-5001 Practice Quiz</h1>
+    <p class="subtitle">// 66 questions · Cybersecurity Defense Analyst</p>
+  </header>
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
-            <div class="mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-semibold mb-2">Ready to start?</h2>
-                <p class="text-gray-500">66 Questions extracted from the SPLK 5001 document.</p>
-            </div>
-            <button onclick="quiz.start()" class="w-full sm:w-auto px-12 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg active:scale-95">
-                Start Quiz
-            </button>
-        </div>
-
-        <!-- Quiz Screen -->
-        <div id="quiz-screen" class="hidden space-y-6 fade-in">
-            <!-- Progress Bar -->
-            <div class="bg-white rounded-xl shadow-sm p-4">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium text-gray-500">Question <span id="current-idx">1</span> of 66</span>
-                    <span class="text-sm font-bold text-blue-600" id="score-display">Score: 0%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
-                <p id="question-text" class="text-lg font-medium text-gray-800 mb-8"></p>
-                
-                <div id="options-container" class="space-y-3">
-                    <!-- Options injected here -->
-                </div>
-
-                <div id="feedback" class="mt-8 hidden">
-                    <div id="feedback-msg" class="p-4 rounded-xl font-medium mb-4"></div>
-                    <button id="next-btn" onclick="quiz.next()" class="w-full py-4 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition-all shadow-md">
-                        Next Question
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Result Screen -->
-        <div id="result-screen" class="hidden bg-white rounded-2xl shadow-xl p-8 text-center fade-in">
-            <h2 class="text-3xl font-bold mb-4">Quiz Complete!</h2>
-            <div class="text-6xl font-extrabold text-blue-600 mb-4" id="final-score">0%</div>
-            <p id="final-stats" class="text-gray-600 mb-8"></p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="quiz.reset()" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all">
-                    Try Again
-                </button>
-            </div>
-        </div>
+  <!-- QUIZ SCREEN -->
+  <div id="quiz-screen">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-meta">
+      <span>Question <span id="q-current">1</span> of 66</span>
+      <span>Score: <span id="score-live">0</span> / <span id="answered-live">0</span></span>
     </div>
 
-    <script>
-        const questions = [
-            { q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of implementing the new process or solution that was selected?", a: "C", o: ["Security Architect", "SOC Manager", "Security Engineer", "Security Analyst"] },
-            { q: "Which of the following is a correct Splunk search that will return results in the most performant way?", a: "A", o: ["index=foo host=i-478619733 | stats range(_time) as duration by src_ip | bin duration span=5min | stats count by duration, host", "stats range(_time) as duration by src_ip | index=foo host=i-478619733 | bin duration span=5min | stats count by duration, host", "index=foo host=i-478619733 | transaction src_ip | stats count by host", "index=foo | transaction src_ip | stats count by host | search host=i-478619733"] },
-            { q: "There are many resources for assisting with SPL and configuration questions. Which of the following resources feature community-sourced answers?", a: "A", o: ["Splunk Answers", "Splunk Lantern", "Splunk Guidebook", "Splunk Documentation"] },
-            { q: "A successful Continuous Monitoring initiative involves the entire organization. When an analyst discovers the need for more context or additional information, perhaps from additional data sources or altered correlation rules, to what role would this request generally escalate?", a: "C", o: ["SOC Manager", "Security Analyst", "Security Engineer", "Security Architect"] },
-            { q: "Splunk Enterprise Security has numerous frameworks to create correlations. Which framework raises the threat profile of individuals or assets to allow identification of people or devices that perform an unusual amount of suspicious activities?", a: "B", o: ["Threat Intelligence Framework", "Risk Framework", "Notable Event Framework", "Asset and Identity Framework"] },
-            { q: "While the top command is utilized to find the most common values, which Splunk command returns the least common values?", a: "C", o: ["least", "uncommon", "rare", "base"] },
-            { q: "The Lockheed Martin Cyber Kill Chain® breaks an attack lifecycle into several stages. A threat actor modified the registry to ensure malware automatically runs at boot. Which phase is this?", a: "D", o: ["Act on Objectives", "Exploitation", "Delivery", "Installation"] },
-            { q: "A Risk Notable Event was determined to be a false positive. What metric defines the time between alert creation and close of the event?", a: "A", o: ["MTTR (Mean Time to Respond)", "MTBF (Mean Time Between Failures)", "MTTA (Mean Time to Acknowledge)", "MTTD (Mean Time to Detect)"] },
-            { q: "Which Splunk command dynamically extracts additional fields as part of a Search pipeline at search time?", a: "A", o: ["rex", "fields", "regex", "eval"] },
-            { q: "Which of the following is considered Personal Data under GDPR?", a: "B", o: ["The birth date of an unidentified user.", "An individual's address including their first and last name.", "The name of a deceased individual.", "A company's registration number."] },
-            { q: "What goal of an APT group aims to disrupt or damage on behalf of a cause?", a: "A", o: ["Hacktivism", "Cyber espionage", "Financial gain", "Prestige"] },
-            { q: "A CTI team produces a report detailing a specific threat actor's typical behaviors and intent. This is what type of intelligence?", a: "D", o: ["Operational", "Executive", "Tactical", "Strategic"] },
-            { q: "An analyst building a search to examine Windows XML Event Logs sees no extracted fields. What is the most likely cause?", a: "C", o: ["Analyst lacks proper role", "Improperly parsed new data", "Analyst did not add extract command", "Wrong search mode"] },
-            { q: "In RBA, a user account that generates multiple risk observations is referred to by Splunk as what type of entity?", a: "B", o: ["Risk Factor", "Risk Object", "Risk Analysis", "Risk Index"] },
-            { q: "Which SPL command can be used to run a subsearch across every field in a wildcard field list?", a: "A", o: ["foreach", "rex", "makeresults", "transaction"] },
-            { q: "How are Notable Events configured in Splunk Enterprise Security?", a: "D", o: ["During investigation", "Part of an audit", "Adaptive Response Action in regular search", "Adaptive Response Action in correlation search"] },
-            { q: "In lateral movement investigation from one Windows host to another, where is the IP of the host the attacker is moving FROM (source) stored according to CIM?", a: "D", o: ["host", "dest", "src_nt_host", "src_ip"] },
-            { q: "Which data source is used to discover unusual communication within an organization's network?", a: "B", o: ["EDS", "Net Flow", "Email", "IAM"] },
-            { q: "Which SPL pipeline filters for users with over 1000 occurrences and sorts them?", a: "B", o: ["sort by user | where count > 1000", "stats count by user | where count > 1000 | sort - count", "| top user", "stats count(user) | sort - count | where count > 1000"] },
-            { q: "Which feature of Splunk ES provides context for correlation search mapping to specific guidelines like NIST 800-171?", a: "C", o: ["Comments", "Moles", "Annotations", "Framework mapping"] },
-            { q: "Which SPL command creates a temporary table containing failed login counts by IP?", a: "C", o: ["eval count as failed_attempts", "transaction count as failed_attempts", "stats count as failed_attempts by src_ip", "sum count as failed_attempts"] },
-            { q: "In which data model would an analyst find the field 'file_acl'?", a: "D", o: ["Malware", "Alerts", "Vulnerabilities", "Endpoint"] },
-            { q: "Analyzing users who rarely log in (Suspicious activity) is an example of what technique?", a: "A", o: ["Least Frequency of Occurrence Analysis", "Co-Occurrence Analysis", "Time Series Analysis", "Outlier Frequency Analysis"] },
-            { q: "What is the main difference between hypothesis-driven and data-driven Threat Hunting?", a: "B", o: ["Data-driven requires more data", "Data-driven uncovers within existing sets; Hypothesis begins with suspected activity", "Hypothesis is for new data only", "Hypothesis is within existing sets; Data-driven begins with suspected activity"] },
-            { q: "Which ES dashboard could be used as a starting point to create a custom typosquatting dashboard?", a: "D", o: ["IAM Activity", "Malware Center", "Access Anomalies", "New Domain Analysis"] },
-            { q: "What is the main difference between DDoS and DoS?", a: "C", o: ["DDoS is physical", "DoS is multiple sources", "DDoS uses multiple sources for one target; DoS is one source", "DDoS targets multiple systems"] },
-            { q: "A briefing to the CISO detailing the threat landscape is what type of intelligence?", a: "B", o: ["Tactical", "Strategic", "Operational", "Executive"] },
-            { q: "Thousands of failed logins using credentials from recent breaches is an example of:", a: "D", o: ["Credential sniffing", "Password cracking", "Password spraying", "Credential stuffing"] },
-            { q: "Who is typically in charge of DESIGNING a new process and selecting the tools for it?", a: "C", o: ["SOC Manager", "Security Engineer", "Security Architect", "Security Analyst"] },
-            { q: "Which SPL finds relevant events across 'src' OR 'machine_name' (if src is empty)?", a: "A", o: ["eval src = coalesce(src, machine_name)", "eval src = src + machine_name", "eval src = src. machine_name", "eval src = tostring(machine_name)"] },
-            { q: "Which command starts a pipeline to create your own test data instead of using indexed data?", a: "A", o: ["makeresults", "rename", "eval", "stats"] },
-            { q: "Attacker devises profile -> creates unique email -> victim opens -> C2 established. This is an example of a:", a: "D", o: ["Tactic", "Policy", "Procedure", "Technique"] },
-            { q: "Which of the following is a best practice for performant Splunk searches?", a: "C", o: ["Use transaction often", "Aggregating before streaming", "Utilize specific fields (fields command)", "Use multiple wildcards"] },
-            { q: "Which app delivers security content/detections on an ongoing basis for ES and SOAR?", a: "B", o: ["SSE", "ESCU", "Threat Hunting", "InfoSec"] },
-            { q: "Which search command allows matching an exact term including minor breakers (periods/underscores)?", a: "D", o: ["CASE()", "LIKE()", "FORMAT()", "TERM()"] },
-            { q: "Which field is automatically added when assets are properly defined and enabled in ES?", a: "C", o: ["asset_category", "src_ip", "src_category", "user"] },
-            { q: "IDS signature alerts on server logins from 6PM-6AM. If no alerts occur in this window and signature is correct, this is:", a: "A", o: ["True Negative", "True Positive", "False Negative", "False Positive"] },
-            { q: "Which is NOT a component of the Splunk Security Content library (ESCU, SSE)?", a: "D", o: ["Dashboards", "Reports", "Correlation searches", "Validated architectures"] },
-            { q: "Which function category is NOT valid with the 'eval' command?", a: "D", o: ["JSON functions", "Text functions", "Comparison functions", "Threat functions"] },
-            { q: "Which of the following is a TACTIC (not technique)?", a: "A", o: ["Gathering information about a target", "Establishing persistence via scheduled task", "Phishing email for access", "Escalating privileges via UAC bypass"] },
-            { q: "Which stage of continuous monitoring involves adding data and creating detections?", a: "A", o: ["Implement and Collect", "Establish and Architect", "Respond and Review", "Analyze and Report"] },
-            { q: "Attacker brute-forces system. No alerts because search only looked at Windows data (missed Linux). This is:", a: "C", o: ["True Positive", "True Negative", "False Negative", "False Positive"] },
-            { q: "IDS alert shows suspicious traffic to malicious IP. Which ES data model shows which process initiated it?", a: "A", o: ["Endpoint", "Authentication", "Network traffic", "Web"] },
-            { q: "Which is a best practice for searching?", a: "C", o: ["Streaming after aggregating", "Raw word searches with wildcards", "Limit fields using the table command", "Searching over All Time"] },
-            { q: "What mode must 'rex' be in to replace defined values with 'X'?", a: "A", o: ["sed", "replace", "mask", "substitute"] },
-            { q: "Which use case is best suited for a Splunk SOAR Playbook?", a: "D", o: ["Forming hypothesis", "Visualizing datasets", "Creating field extractions", "Containment action on compromised host"] },
-            { q: "Which of the following is NOT considered an Indicator of Compromise (IOC)?", a: "D", o: ["Specific phishing domain", "Specific IP in attack", "Specific file hash", "Specific password for account"] },
-            { q: "In the Authentication Data Model, which field represents the user who INITIATED privilege escalation?", a: "C", o: ["username", "src_user_id", "src_user", "dest_user"] },
-            { q: "List: 1. Exploiting remote service, 2. Lateral movement, 3. Use EternalBlue. What order is this?", a: "A", o: ["Tactic, Technique, Procedure", "Procedure, Technique, Tactic", "Technique, Tactic, Procedure", "Tactic, Procedure, Technique"] },
-            { q: "Analyst investigates Notable Event. Logs/artifacts are missing. What disposition should be assigned?", a: "D", o: ["Benign Positive", "False Negative", "True Positive", "Other"] },
-            { q: "Server processed 'POST /cgi-bin/shutdown/' before shutting down. Likely attack?", a: "B", o: ["DDoS", "DoS", "Database injection", "XSS"] },
-            { q: "Which ES framework provides automatic context/correlation to fields in raw data?", a: "A", o: ["Asset and Identity", "Threat Intelligence", "Adaptive Response", "Risk"] },
-            { q: "Which framework runs preconfigured actions or integrates with external apps?", a: "D", o: ["Asset and Identity", "Notable Event", "Threat Intelligence", "Adaptive Response"] },
-            { q: "Which feature allows mapping MITRE ATT&CK or Kill Chain to Correlation Search results?", a: "A", o: ["Annotations", "Playbooks", "Comments", "Enrichments"] },
-            { q: "What is the primary benefit of using CIM in Splunk?", a: "A", o: ["Easier correlation of different sources", "Improved search performance on raw data", "Enables advanced ML", "Automatically blocks threats"] },
-            { q: "In which framework are TTPs categorized?", a: "D", o: ["NIST 800-53", "ISO 27000", "CIS18", "MITRE ATT&CK"] },
-            { q: "Hunter tests hypothesis that Cobalt Strike is present. No evidence found. Outcome?", a: "D", o: ["Successful because not proven", "Failed because not proven", "Failed because no malicious activity found", "Successful in providing evidence tactic is NOT present"] },
-            { q: "Server sending gigabytes more than normal to one IP with no incoming increase. Likely representing?", a: "A", o: ["Data exfiltration", "Network reconnaissance", "Data infiltration", "Lateral movement"] },
-            { q: "In which phase of Continuous Monitoring cycle are improvements suggested?", a: "C", o: ["Define and Predict", "Establish and Architect", "Analyze and Report", "Implement and Collect"] },
-            { q: "Analyst isn't sure all potential data sources are utilized. What should she use for analysis?", a: "B", o: ["Splunk ITSI", "Security Essentials", "SOAR", "Intelligence Management"] },
-            { q: "Why should an executable running from C:\\Windows\\Temp be investigated?", a: "D", o: ["Not owned by user", "Flagged as non-executable", "Contains system page file", "World writable place to stage malware"] },
-            { q: "Where to visualize threat objects and chronological risk events for a Risk Object?", a: "D", o: ["Adaptive Response action", "Workflow action", "Risk Analysis dashboard", "Click risk event count for Timeline"] },
-            { q: "Analyst finds raw logs have info that helps analysis. What should they ask the engineer for?", a: "A", o: ["Create a field extraction", "Add info to risk message", "Create another detection", "Allowlist more events"] },
-            { q: "What device typically sits at perimeter to detect C2 and suspicious traffic?", a: "D", o: ["Host-based firewall", "Web proxy", "EDR", "IDS"] },
-            { q: "Server access log has millions of entries of the same GET request. Likely attack?", a: "B", o: ["DoS", "DDoS", "XSS", "Database Injection"] },
-            { q: "According to David Bianco's Pyramid of Pain, which indicator is LEAST effective in monitoring?", a: "D", o: ["Domain names", "TTPs", "Network artifacts", "Hash values"] }
-        ];
+    <div class="card" id="card">
+      <div class="q-number" id="q-num-label">QUESTION 01</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
 
-        class Quiz {
-            constructor(data) {
-                this.questions = data;
-                this.currentIdx = 0;
-                this.score = 0;
-                this.shuffled = [];
-                this.answered = false;
-            }
+    <div class="nav">
+      <button class="btn" id="btn-prev" onclick="goQuestion(current-1)" disabled>← Prev</button>
+      <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">Skip →</button>
+      <button class="btn primary" id="btn-next" onclick="goQuestion(current+1)" disabled>Next →</button>
+    </div>
+    <div style="text-align:center; margin-top:18px;">
+      <button class="btn" onclick="finishQuiz()" style="border-color:var(--accent2);color:var(--accent2);">Finish &amp; See Results</button>
+    </div>
+  </div>
 
-            start() {
-                this.shuffled = [...this.questions].sort(() => Math.random() - 0.5);
-                document.getElementById('start-screen').classList.add('hidden');
-                document.getElementById('quiz-screen').classList.remove('hidden');
-                this.render();
-            }
+  <!-- RESULTS SCREEN -->
+  <div id="results-screen">
+    <div class="badge">Quiz Complete</div>
+    <div class="score-ring" id="score-ring">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <circle class="bg-c" cx="80" cy="80" r="70"/>
+        <circle class="fg-c" id="score-circle" cx="80" cy="80" r="70"/>
+      </svg>
+      <div class="score-text">
+        <div class="score-pct" id="score-pct">0%</div>
+        <div class="score-label">Score</div>
+      </div>
+    </div>
+    <div class="result-title" id="result-title">Results</div>
+    <div class="result-sub" id="result-sub"></div>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-val g" id="r-correct">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat-box"><div class="stat-val r" id="r-wrong">0</div><div class="stat-lbl">Incorrect</div></div>
+      <div class="stat-box"><div class="stat-val" style="color:var(--muted)" id="r-skipped">0</div><div class="stat-lbl">Skipped</div></div>
+    </div>
+    <button class="btn primary" onclick="restartQuiz()" style="margin-bottom:32px;">Restart Quiz</button>
+    <div class="review-list" id="review-list"></div>
+  </div>
+</div>
 
-            render() {
-                this.answered = false;
-                const q = this.shuffled[this.currentIdx];
-                document.getElementById('current-idx').innerText = this.currentIdx + 1;
-                document.getElementById('question-text').innerText = q.q;
-                
-                const container = document.getElementById('options-container');
-                container.innerHTML = '';
-                
-                q.o.forEach((opt, i) => {
-                    const letter = String.fromCharCode(65 + i);
-                    const btn = document.createElement('button');
-                    btn.className = "option-btn w-full text-left p-4 border-2 border-gray-200 rounded-xl transition-all flex items-start space-x-3";
-                    btn.innerHTML = `<span class="bg-gray-100 px-2 py-0.5 rounded text-sm font-bold text-gray-500">${letter}</span> <span class="flex-1">${opt}</span>`;
-                    btn.onclick = () => this.check(letter, btn);
-                    container.appendChild(btn);
-                });
+<script>
+const questions = [
+  {
+    q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of implementing the new process or solution that was selected?",
+    opts: ["Security Architect","SOC Manager","Security Engineer","Security Analyst"],
+    ans: 2,
+    exp: "The Security Engineer is responsible for implementing and deploying the selected solutions. The Security Architect designs and selects the tools, while analysts investigate and the SOC Manager oversees operations."
+  },
+  {
+    q: "Which of the following is a correct Splunk search that will return results in the most performant way?",
+    opts: [
+      "index=foo host=i-478619733 | stats range(_time) as duration by src_ip | bin duration span=5min | stats count by duration, host",
+      "| stats range(_time) as duration by src_ip | index=foo host=i-478619733 | bin duration span=5min | stats count by duration, host",
+      "index=foo host=i-478619733 | transaction src_ip |stats count by host",
+      "index=foo | transaction src_ip |stats count by host | search host=i-478619733"
+    ],
+    ans: 0,
+    exp: "The most performant Splunk searches filter data as early as possible using index and host constraints before any pipe commands. Option A correctly places index=foo host=i-478619733 at the start, reducing the data set before transformations. Options B and D filter late or after pipes, which is inefficient."
+  },
+  {
+    q: "There are many resources for assisting with SPL and configuration questions. Which of the following resources feature community-sourced answers?",
+    opts: ["Splunk Answers","Splunk Lantern","Splunk Guidebook","Splunk Documentation"],
+    ans: 0,
+    exp: "Splunk Answers (answers.splunk.com) is Splunk's official community Q&A platform where users post questions and the community provides answers. Splunk Lantern and official Documentation are Splunk-authored resources."
+  },
+  {
+    q: "A successful Continuous Monitoring initiative involves the entire organization. When an analyst discovers the need for more context or additional information, perhaps from additional data sources or altered correlation rules, to what role would this request generally escalate?",
+    opts: ["SOC Manager","Security Analyst","Security Engineer","Security Architect"],
+    ans: 2,
+    exp: "Security Engineers handle the technical implementation requests such as onboarding new data sources or modifying correlation rules. Analysts identify needs, but engineers perform the technical work of adding data and building detections."
+  },
+  {
+    q: "Splunk Enterprise Security has numerous frameworks to create correlations, integrate threat intelligence, and provide a workflow for investigations. Which framework raises the threat profile of individuals or assets to allow identification of people or devices that perform an unusual amount of suspicious activities?",
+    opts: ["Threat Intelligence Framework","Risk Framework","Notable Event Framework","Asset and Identity Framework"],
+    ans: 1,
+    exp: "The Risk Framework in Splunk ES assigns risk scores to entities (users, hosts) based on suspicious activity. When an entity accumulates enough risk, a Risk Notable is generated, helping analysts identify high-risk individuals or devices."
+  },
+  {
+    q: "While the top command is utilized to find the most common values contained within a field, a Cyber Defense Analyst hunts for anomalies. Which of the following Splunk commands returns the least common values?",
+    opts: ["least","uncommon","rare","base"],
+    ans: 2,
+    exp: "The `rare` command is the direct counterpart to `top` in Splunk SPL. It returns the least common values in a field, making it useful for anomaly and threat hunting where unusual or infrequent activity is of interest."
+  },
+  {
+    q: "The Lockheed Martin Cyber Kill Chain® breaks an attack lifecycle into several stages. A threat actor modified the registry on a compromised Windows system to ensure that their malware would automatically run at boot time. Into which phase of the Kill Chain would this fall?",
+    opts: ["Act on Objectives","Exploitation","Delivery","Installation"],
+    ans: 3,
+    exp: "The Installation phase of the Kill Chain covers actions taken by attackers to establish persistence on the target, such as modifying the registry to ensure malware runs at startup. Exploitation is the act of triggering a vulnerability, while Act on Objectives is the final goal phase."
+  },
+  {
+    q: "A Risk Notable Event has been triggered in Splunk Enterprise Security, an analyst investigates the alert, and determines it is a false positive. What metric would be used to define the time between alert creation and close of the event?",
+    opts: ["MTTR (Mean Time to Respond)","MTBF (Mean Time Between Failures)","MTTA (Mean Time to Acknowledge)","MTTD (Mean Time to Detect)"],
+    ans: 0,
+    exp: "MTTR (Mean Time to Respond) measures the average time from when an alert is created to when it is resolved or closed. MTTA measures time to first acknowledgment, while MTTD measures time to detect the issue initially."
+  },
+  {
+    q: "An analyst needs to create a new field at search time. Which Splunk command will dynamically extract additional fields as part of a Search pipeline?",
+    opts: ["rex","fields","regex","eval"],
+    ans: 0,
+    exp: "The `rex` command uses regular expressions to extract new fields from existing field values at search time. The `fields` command selects or removes existing fields, and `eval` computes new field values from expressions rather than raw text extraction."
+  },
+  {
+    q: "Which of the following is considered Personal Data under GDPR?",
+    opts: [
+      "The birth date of an unidentified user.",
+      "An individual's address including their first and last name.",
+      "The name of a deceased individual.",
+      "A company's registration number."
+    ],
+    ans: 1,
+    exp: "Under GDPR, personal data is any information that can identify a living natural person. An individual's address combined with their name directly identifies a living person. A birth date alone without identification, a deceased person's name, or a company number do not qualify."
+  },
+  {
+    q: "What goal of an Advanced Persistent Threat (APT) group aims to disrupt or damage on behalf of a cause?",
+    opts: ["Hacktivism","Cyber espionage","Financial gain","Prestige"],
+    ans: 0,
+    exp: "Hacktivism is the use of hacking techniques to promote a political or social cause, often involving disruption or defacement of systems. Cyber espionage aims at stealing information, while financial gain and prestige are other common APT motivations."
+  },
+  {
+    q: "A Cyber Threat Intelligence (CTI) team produces a report detailing a specific threat actor's typical behaviors and intent. This would be an example of what type of intelligence?",
+    opts: ["Operational","Executive","Tactical","Strategic"],
+    ans: 3,
+    exp: "Strategic intelligence provides high-level insight into a threat actor's motivations, capabilities, and intent, helping leadership understand the threat landscape. Tactical intelligence focuses on TTPs, Operational focuses on specific campaigns, and Executive is often a simplified summary for leadership."
+  },
+  {
+    q: "An analyst is building a search to examine Windows XML Event Logs, but the initial search is not returning any extracted fields. Based on the above image, what is the most likely cause?",
+    opts: [
+      "The analyst does not have the proper role to search this data.",
+      "The analyst is searching newly indexed data that was improperly parsed.",
+      "The analyst did not add the excract command to their search pipeline.",
+      "The analyst is not in the Drooer Search Mode and should switch to Smart or Verbose."
+    ],
+    ans: 2,
+    exp: "When searching XML-based Windows event logs, fields are not automatically extracted unless the `extract` command (or spath for XML) is added to the search pipeline. Without it, Splunk will show the raw event but no parsed fields."
+  },
+  {
+    q: "An organization is using Risk-Based Alerting (RBA). During the past few days, a user account generated multiple risk observations. Splunk refers to this account as what type of entity?",
+    opts: ["Risk Factor","Risk Index","Risk Analysis","Risk Object"],
+    ans: 1,
+    exp: "In Splunk ES Risk-Based Alerting, entities (users, hosts, IPs) that accumulate risk scores are tracked in the risk index. The answer key identifies this as the Risk Index — the location where risk data for these entities is stored and referenced."
+  },
+  {
+    q: "When searching in Splunk, which of the following SPL commands can be used to run a subsearch across every field in a wildcard field list?",
+    opts: ["foreach","rex","makeresults","transaction"],
+    ans: 0,
+    exp: "The `foreach` command iterates over fields in a wildcard list and runs a template command for each matching field, making it ideal for running operations across multiple dynamically named fields. `rex` extracts, `makeresults` generates, and `transaction` groups events."
+  },
+  {
+    q: "How are Notable Events configured in Splunk Enterprise Security?",
+    opts: [
+      "During an investigation.",
+      "As part of an audit.",
+      "Via an Adaptive Response Action in a regular search.",
+      "Via an Adaptive Response Action in a correlation search."
+    ],
+    ans: 3,
+    exp: "Notable Events in Splunk ES are created through Adaptive Response Actions that are configured within Correlation Searches. When a correlation search fires, its associated Adaptive Response Action writes the Notable Event to the notable index."
+  },
+  {
+    q: "An analyst is investigating a network alert for suspected lateral movement from one Windows host to another Windows host. According to Splunk CIM documentation, the IP address of the host from which the attacker is moving would be in which field?",
+    opts: ["host","dest","src_nt_host","src_ip"],
+    ans: 3,
+    exp: "In the Splunk CIM Network Traffic data model, `src_ip` holds the source IP address — the system initiating the connection, which in a lateral movement scenario is the host the attacker is moving from. `dest` is the destination, and `host` refers to the log source."
+  },
+  {
+    q: "Which of the following data sources can be used to discover unusual communication within an organization's network?",
+    opts: ["EDS","Net Flow","Email","IAM"],
+    ans: 1,
+    exp: "Net Flow (NetFlow) data captures metadata about network connections — source/destination IPs, ports, bytes transferred — without capturing content. This makes it ideal for detecting unusual communication patterns such as beaconing, lateral movement, or data exfiltration."
+  },
+  {
+    q: "When threat hunting for outliers in Splunk, which of the following SPL pipelines would filter for users with over a thousand occurrences?",
+    opts: [
+      "| sort by user | where count > 1000",
+      "| stats count by user | where count > 1000 | sort - count",
+      "| top user",
+      "| stats count(user) | sort - count | where count > 1000"
+    ],
+    ans: 1,
+    exp: "Option B correctly uses `stats count by user` to aggregate counts per user, then `where count > 1000` to filter, and `sort - count` to order descending. Option A lacks the stats aggregation needed before `where count`, and Option D uses an incorrect stats syntax."
+  },
+  {
+    q: "The United States Department of Defense (DoD) requires all government contractors to provide adequate security safeguards referenced in National Institute of Standards and Technology (NIST) 800-171. All DoD contractors must continually reassess, monitor, and track compliance to be able to do business with the US government.\n\nWhich feature of Splunk Enterprise Security provides an analyst context for the correlation search mapping to the specific NIST guidelines?",
+    opts: ["Comments","Moles","Annotations","Framework mapping"],
+    ans: 3,
+    exp: "Framework mapping in Splunk ES allows correlation searches to be mapped to industry standards and compliance frameworks such as NIST 800-171, CIS Controls, and MITRE ATT&CK. This gives analysts immediate regulatory context for each alert."
+  },
+  {
+    q: "An analyst is investigating the number of failed login attempts by IP address. Which SPL command can be used to create a temporary table containing the number of failed login attempts by IP address over a specific time period?",
+    opts: [
+      "index=security_logs eventtype=failed_login | eval count as failed_attempts by src_ip | sort -failed_attempts",
+      "index=security_logs eventtype=failed_login | transaction count as failed_attempts by src_ip | sort -failed_attempts",
+      "index=security_logs eventtype=failed_login | stats count as failed_attempts by src_ip | sort -failed_attempts",
+      "index=security_logs eventtype=failed_login | sum count as failed_attempts by src_ip | sort -failed_attempts"
+    ],
+    ans: 2,
+    exp: "The `stats count as failed_attempts by src_ip` command correctly aggregates events, counts them, renames the count field, and groups by source IP. `eval` and `transaction` cannot aggregate in this way, and `sum` is not a standalone SPL command."
+  },
+  {
+    q: "The field file_acl contains access controls associated with files affected by an event. In which data model would an analyst find this field?",
+    opts: ["Malware","Alerts","Vulnerabilities","Endpoint"],
+    ans: 3,
+    exp: "The `file_acl` field belongs to the Endpoint data model, specifically the Filesystem dataset, which tracks file-level events including access controls, file modifications, and process interactions on endpoints."
+  },
+  {
+    q: "A threat hunter generates a report containing the list of users who have logged in to a particular database during the last 6 months, along with the number of times they have each authenticated. They sort this list and remove any user names who have logged in more than 6 times. The remaining names represent the users who rarely log in, as their activity is more suspicious. The hunter examines each of these rare logins in detail.\n\nThis is an example of what type of threat-hunting technique?",
+    opts: [
+      "Least Frequency of Occurrence Analysis",
+      "Co-Occurrence Analysis",
+      "Time Series Analysis",
+      "Outlier Frequency Analysis"
+    ],
+    ans: 0,
+    exp: "Least Frequency of Occurrence (LFO) Analysis focuses on identifying rare events that are statistically uncommon. By removing frequent users and focusing on those with minimal login activity, the hunter is specifically looking for low-frequency events that could indicate malicious access."
+  },
+  {
+    q: "What is the main difference between hypothesis-driven and data-driven Threat Hunting?",
+    opts: [
+      "Data-driven hunts always require more data to search through than hypothesis-driven hunts.",
+      "Data-driven hunting tries to uncover activity within an existing data set, hypothesis-driven hunting begins with a potential activity that the hunter thinks may be happening.",
+      "Hypothesis-driven hunts are typically executed on newly ingested data sources, while data-driven hunts are not.",
+      "Hypothesis-driven hunting tries to uncover activity within an existing data set, data-driven hunting begins with an activity that the hunter thinks may be happening."
+    ],
+    ans: 1,
+    exp: "Data-driven hunting analyzes existing data for patterns or anomalies without a predetermined idea. Hypothesis-driven hunting starts with a specific assumption (e.g., 'an attacker may be using Cobalt Strike') and searches for evidence to confirm or refute it."
+  },
+  {
+    q: "The Security Operations Center (SOC) manager is interested in creating a new dashboard for typosquatting after a successful campaign against a group of senior executives. Which existing ES dashboard could be used as a starting point to create a custom dashboard?",
+    opts: ["IAM Activity","Malware Center","Access Anomalies","New Domain Analysis"],
+    ans: 3,
+    exp: "The New Domain Analysis dashboard in Splunk ES helps identify recently registered or newly seen domains, which is foundational for detecting typosquatting — where attackers register domains that closely resemble legitimate ones to deceive users."
+  },
+  {
+    q: "What is the main difference between a DDoS and a DoS attack?",
+    opts: [
+      "A DDoS attack is a type of physical attack, while a DoS attack is a type of cyberattack.",
+      "A DDoS attack uses a single source to target a single system, while a DoS attack uses multiple sources to target multiple systems.",
+      "A DDoS attack uses multiple sources to target a single system, while a DoS attack uses a single source to target a single or multiple systems.",
+      "A DDoS attack uses a single source to target multiple systems, while a DoS attack uses multiple sources to target a single system."
+    ],
+    ans: 2,
+    exp: "A Distributed Denial of Service (DDoS) attack leverages many compromised systems (a botnet) to simultaneously overwhelm a single target. A standard DoS attack originates from a single source. This distinction is critical for understanding attack scale and mitigation strategies."
+  },
+  {
+    q: "A Cyber Threat Intelligence (CTI) team delivers a briefing to the CISO detailing their view of the threat landscape the organization faces. This is an example of what type of Threat Intelligence?",
+    opts: ["Tactical","Strategic","Operational","Executive"],
+    ans: 1,
+    exp: "Strategic intelligence is high-level, long-term intelligence about the overall threat landscape, adversary intent, and geopolitical risk. It is consumed by senior leadership (like a CISO) to guide strategy and investment decisions, rather than immediate operational response."
+  },
+  {
+    q: "An analyst is examining the logs for a web application's login form. They see thousands of failed logon attempts using various usernames and passwords. Internet research indicates that these credentials may have been compiled by combining account information from several recent data breaches.\n\nWhich type of attack would this be an example of?",
+    opts: ["Credential sniffing","Password cracking","Password spraying","Credential stuffing"],
+    ans: 3,
+    exp: "Credential stuffing uses large sets of previously breached username/password combinations to attempt logins against other services, exploiting password reuse. Password spraying tries one password against many accounts, and cracking involves computationally deriving passwords from hashes."
+  },
+  {
+    q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of designing the new process and selecting the required tools to implement it?",
+    opts: ["SOC Manager","Security Engineer","Security Architect","Security Analyst"],
+    ans: 2,
+    exp: "The Security Architect is responsible for designing security solutions, selecting appropriate tools, and defining the architecture. Once the architecture is defined, the Security Engineer implements it. This is the companion question to Q1 — architects design, engineers implement."
+  },
+  {
+    q: "After discovering some events that were missed in an initial investigation, an analyst determines this is because some events have an empty src field. Instead, the required data is often captured in another field called machine_name.\n\nWhat SPL could they use to find all relevant events across either field until the field extraction is fixed?",
+    opts: [
+      "| eval src = coalesce(src,machine_name)",
+      "| eval src = src + machine_name",
+      "| eval src = src . machine_name",
+      "| eval src = tostring(machine_name)"
+    ],
+    ans: 0,
+    exp: "The `coalesce()` function returns the first non-null value from a list of fields. `coalesce(src, machine_name)` means: use `src` if it exists; otherwise fall back to `machine_name`. This elegantly handles missing field values without losing events."
+  },
+  {
+    q: "An analyst would like to test how certain Splunk SPL commands work against a small set of data. What command should start the search pipeline if they wanted to create their own data instead of utilizing data contained within Splunk?",
+    opts: ["makeresults","rename","eval","stats"],
+    ans: 0,
+    exp: "`makeresults` generates a specified number of synthetic result rows without querying any index. It is the standard starting point when an analyst wants to experiment with SPL commands using custom or mock data rather than real indexed events."
+  },
+  {
+    q: "What is the following step-by-step description an example of?\n\n1. The attacker devises a non-default beacon profile with Cobalt Strike and embeds this within a document.\n2. The attacker creates a unique email with the malicious document based on extensive research about their target.\n3. When the victim opens this document, a C2 channel is established to the attacker's temporary infrastructure on a compromised website.",
+    opts: ["Tactic","Policy","Procedure","Technique"],
+    ans: 3,
+    exp: "In MITRE ATT&CK, a Technique describes a specific technical method an adversary uses. This detailed, step-by-step implementation using specific tools (Cobalt Strike) and methods describes a Technique. A Tactic is a broader goal category, and a Procedure would be an even more granular real-world implementation."
+  },
+  {
+    q: "Which of the following is a best practice when creating performant searches within Splunk?",
+    opts: [
+      "Utilize the transaction command to aggregate data for faster analysis.",
+      "Utilize Aggregating commands to ensure all data is available prior to Streaming commands.",
+      "Utilize specific fields to return only the data that is required.",
+      "Utilize multiple wildcards across fields to ensure returned data is complete and available."
+    ],
+    ans: 2,
+    exp: "Specifying only the fields you need (using `fields` command) reduces the amount of data Splunk processes and passes through the pipeline, significantly improving performance. Wildcards and `transaction` commands are known to degrade performance."
+  },
+  {
+    q: "Which pre-packaged app delivers security content and detections on a regular, ongoing basis for Enterprise Security and SOAR?",
+    opts: ["SSE","ESCU","Threat Hunting","InfoSec"],
+    ans: 1,
+    exp: "ESCU (Enterprise Security Content Update) is Splunk's regularly updated package of detection searches, correlation rules, and threat content for Enterprise Security and SOAR. It is maintained and updated by Splunk's threat research team (STRT)."
+  },
+  {
+    q: "Which search command allows an analyst to match whatever is inside the parentheses as a single term in the index, even if it contains characters that are usually recognized as minor breakers such as periods or underscores?",
+    opts: ["CASE()","LIKE()","FORMAT ()","TERM ()"],
+    ans: 3,
+    exp: "The `TERM()` directive forces Splunk to treat the enclosed string as a single search term, bypassing minor breakers like periods, underscores, and hyphens. This is especially useful when searching for IP addresses, file hashes, or version strings as exact terms."
+  },
+  {
+    q: "Which field is automatically added to search results when assets are properly defined and enabled in Splunk Enterprise Security?",
+    opts: ["asset_category","src_ip","src_category","user"],
+    ans: 2,
+    exp: "When the Asset and Identity framework is properly configured in Splunk ES, it automatically enriches events with `src_category` (and `dest_category`) by correlating the IP or hostname in the event with the asset lookup table, providing context about the asset's role or classification."
+  },
+  {
+    q: "An IDS signature is designed to detect and alert on logins to a certain server, but only if they occur from 6:00 PM - 6:00 AM. If no IDS alerts occur in this window, but the signature is known to be correct, this would be an example of what?",
+    opts: ["A True Negative.","A True Positive.","A False Negative.","A False Positive."],
+    ans: 0,
+    exp: "A True Negative occurs when the detection system correctly does not alert because no malicious activity actually took place. If no logins occurred during the monitored window and no alert fired, the system correctly identified the absence of a threat — that is a True Negative."
+  },
+  {
+    q: "Which of the following is not a component of the Splunk Security Content library (ESCU, SSE)?",
+    opts: ["Dashboards","Reports","Correlation searches","Validated architectures"],
+    ans: 3,
+    exp: "The Splunk Security Content library (ESCU/SSE) includes dashboards, reports, correlation searches, saved searches, macros, and lookup files. Validated architectures are hardware/deployment sizing guides published separately and are not part of the security content library."
+  },
+  {
+    q: "The eval SPL expression supports many types of functions. Which of these function categories is not valid with eval?",
+    opts: ["JSON functions","Text functions","Comparison and Conditional functions","Threat functions"],
+    ans: 3,
+    exp: "Splunk's `eval` command supports a wide range of function categories including mathematical, text/string, comparison, conditional, date/time, JSON, and cryptographic functions. 'Threat functions' is not a recognized eval function category in Splunk SPL."
+  },
+  {
+    q: "Which of the following is a tactic used by attackers, rather than a technique?",
+    opts: [
+      "Gathering information about a target.",
+      "Establishing persistence with a scheduled task.",
+      "Using a phishing email to gain initial access.",
+      "Escalating privileges via UAC bypass."
+    ],
+    ans: 0,
+    exp: "In MITRE ATT&CK, a Tactic is a high-level adversary goal or category (e.g., Reconnaissance, Persistence, Privilege Escalation). 'Gathering information about a target' is the Reconnaissance tactic. The other options describe specific Techniques (how the goal is achieved)."
+  },
+  {
+    q: "Which stage of continuous monitoring involves adding data, creating detections, and building drilldowns?",
+    opts: ["Implement and Collect","Establish and Architect","Respond and Review","Analyze and Report"],
+    ans: 0,
+    exp: "The 'Implement and Collect' stage is where the actual technical work happens: onboarding data sources, writing correlation searches, and building drilldown dashboards. 'Establish and Architect' is the planning phase, while 'Analyze and Report' focuses on reviewing findings."
+  },
+  {
+    q: "An analyst is investigating how an attacker successfully performs a brute-force attack to gain a foothold into an organizations systems. In the course of the investigation the analyst determines that the reason no alerts were generated is because the detection searches were configured to run against Windows data only and excluding any Linux data.\n\nThis is an example of what?",
+    opts: ["A True Positive.","A True Negative.","A False Negative.","A False Positive."],
+    ans: 2,
+    exp: "A False Negative occurs when malicious activity actually happened, but the detection system failed to alert on it. Here, the brute-force attack was real (True condition), but the alert did not fire (Negative result) because Linux logs were excluded — a detection gap."
+  },
+  {
+    q: "An analyst investigates an IDS alert and confirms suspicious traffic to a known malicious IP. What Enterprise Security data model would they use to investigate which process initiated the network connection?",
+    opts: ["Endpoint","Authentication","Network traffic","Web"],
+    ans: 0,
+    exp: "Process-level information (which process initiated a network connection) is captured in the Endpoint data model, specifically the Processes dataset. Network traffic shows the connection itself but not the initiating process — that requires endpoint telemetry like Sysmon or EDR data."
+  },
+  {
+    q: "Which of the following is a best practice for searching in Splunk?",
+    opts: [
+      "Streaming commands run before aggregating commands in the Search pipeline.",
+      "Raw word searches should contain multiple wildcards to ensure all edge cases are covered.",
+      "Limit fields returned from the search utilizing the cable command.",
+      "Searching over All Time ensures that all relevant data is returned."
+    ],
+    ans: 2,
+    exp: "Limiting fields using the `table` command (noted here as 'cable' due to a typo in the source) reduces the data volume passed through the pipeline and improves performance. Wildcards and All Time searches are known performance anti-patterns in Splunk."
+  },
+  {
+    q: "While testing the dynamic removal of credit card numbers, an analyst lands on using the rex command. What mode needs to be set to in order to replace the defined values with X?\n\n| makeresults\n| eval ccnumber=\"511388720478619733\"\n| rex field=ccnumber mode=??? \"s/(\\d{4}-){3)/XXXX-XXXX-XXXX-/g\"\n\nPlease assume that the above rex command is correctly written.",
+    opts: ["sed","replace","mask","substitute"],
+    ans: 0,
+    exp: "Setting `mode=sed` in the `rex` command enables sed-style substitution syntax, allowing you to use expressions like `s/pattern/replacement/flags` to find and replace values in a field. This is the only mode in which the `rex` command performs replacements rather than just extraction."
+  },
+  {
+    q: "Which of the following use cases is best suited to be a Splunk SOAR Playbook?",
+    opts: [
+      "Forming hypothesis for Threat Hunting",
+      "Visualizing complex datasets.",
+      "Creating persistent field extractions.",
+      "Taking containment action on a compromised host"
+    ],
+    ans: 3,
+    exp: "Splunk SOAR Playbooks are designed to automate incident response workflows, including taking rapid containment actions (e.g., isolating a host, blocking an IP). Manual hypothesis formation, visualization, and field extractions are analyst tasks better suited to other Splunk tools."
+  },
+  {
+    q: "Which of the following is not considered an Indicator of Compromise (IOC)?",
+    opts: [
+      "A specific domain that is utilized for phishing.",
+      "A specific IP address used in a cyberattack.",
+      "A specific file hash of a malicious executable.",
+      "A specific password for a compromised account."
+    ],
+    ans: 3,
+    exp: "IOCs are artifacts that indicate a system has been compromised: malicious domains, IPs, file hashes, registry keys, etc. A password — even a compromised one — is a credential, not an indicator that a compromise occurred. It's what an attacker uses, not evidence left behind."
+  },
+  {
+    q: "According to Splunk CIM documentation, which field in the Authentication Data Model represents the user who initiated a privilege escalation?",
+    opts: ["username","src_user_id","src_user","dest_user"],
+    ans: 2,
+    exp: "In the Splunk CIM Authentication data model, `src_user` represents the user initiating an action — in a privilege escalation scenario, this is the user who initiated the escalation attempt. `dest_user` would be the target account being escalated to."
+  },
+  {
+    q: "The following list contains examples of Tactics, Techniques, and Procedures (TTPs):\n1. Exploiting a remote service\n2. Lateral movement\n3. Use EternalBlue to exploit a remote SMB server\nIn which order are they listed below?",
+    opts: [
+      "Tactic, Technique, Procedure",
+      "Procedure, Technique, Tactic",
+      "Technique, Tactic, Procedure",
+      "Tactic, Procedure, Technique"
+    ],
+    ans: 0,
+    exp: "Item 1 ('Exploiting a remote service') is a Technique — a specific method. Item 2 ('Lateral movement') is a Tactic — a high-level goal. Item 3 ('Use EternalBlue to exploit a remote SMB server') is a Procedure — a specific, named real-world implementation. Order: Technique, Tactic, Procedure = Answer A."
+  },
+  {
+    q: "An analyst is attempting to investigate a Notable Event within Enterprise Security. Through the course of their investigation they determined that the logs and artifacts needed to investigate the alert are not available.\n\nWhat event disposition should the analyst assign to the Notable Event?",
+    opts: [
+      "Benign Positive, since there was no evidence that the event actually occurred.",
+      "False Negative, since there are no logs to prove the activity actually occurred.",
+      "True Positive, since there are no logs to prove that the event did not occur.",
+      "Other, since a security engineer needs to ingest the required logs."
+    ],
+    ans: 3,
+    exp: "When an investigation cannot be concluded due to missing data, the correct disposition is 'Other,' indicating that the investigation is inconclusive and requires additional resources (such as a security engineer ingesting the missing logs) before a determination can be made."
+  },
+  {
+    q: "An analyst is looking at Web Server logs, and sees the following entry as the last web request that a server processed before unexpectedly shutting down:\n\n147.186.119.107 - - [28/Jul/2006:10:27:10 -0300] \"POST /cgi-bin/shutdown/ HTTP/1.0\" 200 3333\n\nWhat kind of attack is most likely occurring?",
+    opts: [
+      "Distributed denial of service attack.",
+      "Denial of service attack.",
+      "Database injection attack.",
+      "Cross-Site scripting attack."
+    ],
+    ans: 1,
+    exp: "A single IP (147.186.119.107) sending a POST request to a /cgi-bin/shutdown/ endpoint that caused the server to go offline is characteristic of a Denial of Service (DoS) attack — specifically, exploiting an exposed administrative endpoint. A DDoS would involve many sources."
+  },
+  {
+    q: "Which of the Enterprise Security frameworks provides additional automatic context and correlation to fields that exist within raw data?",
+    opts: ["Asset and Identity","Threat Intelligence","Adaptive Response","Risk"],
+    ans: 0,
+    exp: "The Asset and Identity framework automatically enriches events by correlating IP addresses, hostnames, and usernames in raw log data against the asset and identity lookup tables, adding fields like src_category, dest_category, and user identity context."
+  },
+  {
+    q: "Which Enterprise Security framework provides a mechanism for running preconfigured actions within the Splunk platform or integrating with external applications?",
+    opts: ["Asset and Identity","Notable Event","Threat Intelligence","Adaptive Response"],
+    ans: 3,
+    exp: "The Adaptive Response framework in Splunk ES allows analysts and correlation searches to trigger preconfigured actions — such as running scripts, sending alerts, or integrating with external systems like ticketing tools or SOAR platforms — in response to detected events."
+  },
+  {
+    q: "Which of the following Splunk Enterprise Security features allows industry frameworks such as CIS Critical Security Controls, MITRE ATT&CK, and the Lockheed Martin Cyber Kill Chain® to be mapped to Correlation Search results?",
+    opts: ["Annotations","Playbooks","Comments","Enrichments"],
+    ans: 0,
+    exp: "Annotations in Splunk ES allow correlation searches to be tagged with mappings to industry frameworks like MITRE ATT&CK, CIS Controls, and the Cyber Kill Chain. This gives analysts immediate regulatory and threat-intelligence context when investigating a Notable Event."
+  },
+  {
+    q: "Which of the following is the primary benefit of using the CIM in Splunk?",
+    opts: [
+      "It allows for easier correlation of data from different sources.",
+      "It improves the performance of search queries on raw data.",
+      "It enables the use of advanced machine learning algorithms.",
+      "It automatically detects and blocks cyber threats."
+    ],
+    ans: 0,
+    exp: "The Common Information Model (CIM) normalizes data from disparate sources into a common schema. This means data from firewalls, Windows logs, and cloud services can all be searched and correlated using the same field names, dramatically simplifying cross-source analysis."
+  },
+  {
+    q: "Tactics, Techniques, and Procedures (TTPs) are methods or behaviors utilized by attackers. In which framework are these categorized?",
+    opts: ["NIST 800-53","ISO 27000","CIS18","MITRE ATT&CK"],
+    ans: 3,
+    exp: "The MITRE ATT&CK framework is the industry-standard knowledge base that categorizes adversary Tactics, Techniques, and Procedures based on real-world observations. NIST 800-53 and CIS18 are security control frameworks, and ISO 27000 is an information security management standard."
+  },
+  {
+    q: "A threat hunter executed a hunt based on the following hypothesis:\n\nAs an actor, I want to plant rundll32 for proxy execution of malicious code and leverage Cobalt Strike for Command and Control.\n\nRelevant logs and artifacts such as Sysmon, netflow, IDS alerts, and EDR logs were searched, and the hunter is confident in the conclusion that Cobalt Strike is not present in the company's environment.\n\nWhich of the following best describes the outcome of this threat hunt?",
+    opts: [
+      "The threat hunt was successful because the hypothesis was not proven.",
+      "The threat hunt failed because the hypothesis was not proven.",
+      "The threat hunt failed because no malicious activity was identified.",
+      "The threat hunt was successful in providing strong evidence that the tactic and tool is not present in the environment."
+    ],
+    ans: 3,
+    exp: "A threat hunt is successful when it reaches a confident conclusion — whether it finds malicious activity or definitively rules it out. Successfully proving that a specific threat is absent is a valuable outcome, especially when thorough evidence was reviewed to reach that conclusion."
+  },
+  {
+    q: "An analyst notices that one of their servers is sending an unusually large amount of traffic, gigabytes more than normal, to a single system on the Internet. There doesn't seem to be any associated increase in incoming traffic.\n\nWhat type of threat actor activity might this represent?",
+    opts: ["Data exfiltration","Network reconnaissance","Data infiltration","Lateral movement"],
+    ans: 0,
+    exp: "Large volumes of outbound traffic to an external IP without corresponding inbound traffic is a classic data exfiltration pattern — an attacker is copying sensitive data out of the organization. Lateral movement would show internal traffic, and reconnaissance typically generates less data."
+  },
+  {
+    q: "In which phase of the Continuous Monitoring cycle are suggestions and improvements typically made?",
+    opts: ["Define and Predict","Establish and Architect","Analyze and Report","Implement and Collect"],
+    ans: 2,
+    exp: "The 'Analyze and Report' phase is where findings from monitoring are reviewed, trends are identified, and recommendations for improvements are made. This feedback loop drives enhancements back into the 'Implement and Collect' stage in the next cycle."
+  },
+  {
+    q: "An analyst is not sure that all of the potential data sources at her company are being correctly or completely utilized by Splunk and Enterprise Security. Which of the following might she suggest using, in order to perform an analysis of the data types available and some of their potential security uses?",
+    opts: ["Splunk ITSI","Security Essentials","SOAR","Splunk Intelligence Management"],
+    ans: 1,
+    exp: "Splunk Security Essentials (SSE) includes a data inventory and use-case library that helps organizations understand what data sources they have, which security detections those sources can support, and what gaps exist. It's a key tool for assessing detection coverage."
+  },
+  {
+    q: "During their shift, an analyst receives an alert about an executable being run from C:\\Windows\\Temp. Why should this be investigated further?",
+    opts: [
+      "Temp directories aren't owned by any particular user, making it difficult to track the process owner when files are executed.",
+      "Temp directories are flagged as non-executable, meaning that no files stored within can be executed, and this executable was run from that directory.",
+      "Temp directories contain the system page file and the virtual memory file, meaning the attacker can use their malware to read the in memory values of running programs.",
+      "Temp directories are world writable thus allowing attackers a place to drop, stage, and execute malware on a system without needing to worry about file permissions."
+    ],
+    ans: 3,
+    exp: "C:\\Windows\\Temp (and %TEMP%) directories are writable by all users, making them a common staging ground for attackers. Malware dropped and executed from Temp directories bypasses the need for elevated write permissions to protected system folders, which is a well-known attacker technique."
+  },
+  {
+    q: "An analyst would like to visualize threat objects across their environment and chronological risk events for a Risk Object in Incident Review. Where would they find this?",
+    opts: [
+      "Running the Risk Analysis Adaptive Response action within the Notable Event.",
+      "Via a workflow action for the Risk Investigation dashboard.",
+      "Via the Risk Analysis dashboard under the Security Intelligence tab in Enterprise Security.",
+      "Clicking the risk event count to open the Risk Event Timeline."
+    ],
+    ans: 3,
+    exp: "Within Incident Review in Splunk ES, clicking on a risk event count for a Risk Object opens the Risk Event Timeline — a chronological view of all risk-contributing events for that entity. This helps analysts understand the sequence and pattern of suspicious activities."
+  },
+  {
+    q: "A Risk Rule generates events on Suspicious Cloud Share Activity and regularly contributes to confirmed incidents from Risk Notables. An analyst realizes the raw logs these events are generated from contain information which helps them determine what might be malicious.\n\nWhat should they ask their engineer for to make their analysis easier?",
+    opts: [
+      "Create a field extraction for this information.",
+      "Add this information to the risk message.",
+      "Create another detection for this information.",
+      "Allowlist more events based on this information."
+    ],
+    ans: 0,
+    exp: "When raw log data contains useful but unparsed information, creating a field extraction allows Splunk to surface that data as a structured, searchable field. This makes it immediately visible in Notable Events and investigation workflows without requiring analysts to parse raw text manually."
+  },
+  {
+    q: "What device typically sits at a network perimeter to detect command and control and other potentially suspicious traffic?",
+    opts: [
+      "Host-based firewall",
+      "Web proxy",
+      "Endpoint Detection and Response",
+      "Intrusion Detection System"
+    ],
+    ans: 3,
+    exp: "An Intrusion Detection System (IDS) is specifically designed to monitor network traffic at the perimeter for known attack signatures and anomalies, including C2 communication patterns. A host-based firewall operates locally, a web proxy filters web traffic, and EDR monitors endpoint behavior."
+  },
+  {
+    q: "Upon investigating a report of a web server becoming unavailable, the security analyst finds that the web server's access log has the same log entry millions of times:\n\n147.186.119.200 - - [28/Jul/2023:12:04:13 -0300] \"GET /login/ HTTP/1.0\" 200 3733\n\nWhat kind of attack is occurring?",
+    opts: [
+      "Denial of Service Attack",
+      "Distributed Denial of Service Attack",
+      "Cross-Site Scripting Attack",
+      "Database Injection Attack"
+    ],
+    ans: 1,
+    exp: "Millions of identical requests overwhelming a web server indicate a volumetric attack. The scale of the attack (millions of requests) suggests it originates from multiple distributed sources (a botnet), making this a Distributed Denial of Service (DDoS) attack rather than a single-source DoS."
+  },
+  {
+    q: "According to David Bianco's Pyramid of Pain, which indicator type is least effective when used in continuous monitoring?",
+    opts: ["Domain names","TTPs","NetworM-lost artifacts","Hash values"],
+    ans: 3,
+    exp: "At the base of Bianco's Pyramid of Pain, hash values are the easiest for attackers to change (recompile or modify the malware) and therefore the least effective for defenders. TTPs are at the top — the hardest for attackers to change and most effective for defenders."
+  }
+];
 
-                document.getElementById('feedback').classList.add('hidden');
-                this.updateProgress();
-            }
+// State
+let current = 0;
+let userAnswers = new Array(questions.length).fill(null);
+let score = 0;
+let answered = 0;
 
-            check(choice, btn) {
-                if (this.answered) return;
-                this.answered = true;
-                
-                const correctLetter = this.shuffled[this.currentIdx].a;
-                const buttons = document.querySelectorAll('.option-btn');
-                
-                buttons.forEach(b => {
-                    b.disabled = true;
-                    if (b.innerText.startsWith(correctLetter)) {
-                        b.classList.add('correct');
-                    }
-                });
+function renderQuestion(idx) {
+  const q = questions[idx];
+  document.getElementById('q-num-label').textContent = `QUESTION ${String(idx+1).padStart(2,'0')}`;
+  document.getElementById('q-current').textContent = idx+1;
 
-                const feedbackMsg = document.getElementById('feedback-msg');
-                if (choice === correctLetter) {
-                    this.score++;
-                    feedbackMsg.innerText = "Correct! Well done.";
-                    feedbackMsg.className = "p-4 rounded-xl font-medium mb-4 bg-green-100 text-green-800";
-                } else {
-                    btn.classList.add('wrong');
-                    feedbackMsg.innerText = `Incorrect. The correct answer was ${correctLetter}.`;
-                    feedbackMsg.className = "p-4 rounded-xl font-medium mb-4 bg-red-100 text-red-800";
-                }
+  // Format question text with code blocks
+  let qText = q.q;
+  // Replace lines that look like code/SPL with code elements
+  qText = qText.replace(/\n((?:index=|eval |stats |rex |makeresults|147\.\d|\|)[^\n]+)/g, (m, p1) => `\n<code>${p1}</code>`);
+  // Handle numbered lists in question text
+  qText = qText.replace(/\n(\d+\. )/g, '\n$1');
+  // Replace remaining newlines
+  const parts = qText.split('\n');
+  document.getElementById('q-text').innerHTML = parts.join('<br>');
 
-                document.getElementById('feedback').classList.remove('hidden');
-                this.updateScore();
-            }
+  const optsEl = document.getElementById('options');
+  optsEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.dataset.idx = i;
+    div.innerHTML = `<span class="option-letter">${letters[i]}.</span><span>${opt}</span>`;
 
-            next() {
-                this.currentIdx++;
-                if (this.currentIdx < this.shuffled.length) {
-                    this.render();
-                } else {
-                    this.showResults();
-                }
-            }
+    if (userAnswers[idx] !== null) {
+      div.classList.add('locked');
+      if (i === q.ans) div.classList.add('correct');
+      else if (i === userAnswers[idx]) div.classList.add('wrong');
+    } else {
+      div.onclick = () => selectAnswer(idx, i);
+    }
+    optsEl.appendChild(div);
+  });
 
-            updateProgress() {
-                const percent = (this.currentIdx / this.shuffled.length) * 100;
-                document.getElementById('progress-bar').style.width = percent + '%';
-            }
+  // Feedback
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+  if (userAnswers[idx] !== null) {
+    const correct = userAnswers[idx] === q.ans;
+    fb.className = 'feedback ' + (correct ? 'correct-fb' : 'wrong-fb');
+    fb.innerHTML = (correct ? '' : `Correct answer: <strong>${letters[q.ans]}. ${q.opts[q.ans]}</strong><br><br>`) + q.exp;
+  }
 
-            updateScore() {
-                const totalAttempted = this.currentIdx + 1;
-                const percent = Math.round((this.score / totalAttempted) * 100);
-                document.getElementById('score-display').innerText = `Score: ${percent}%`;
-            }
+  // Nav
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = userAnswers[idx] === null || idx === questions.length - 1;
+  document.getElementById('btn-skip').style.display = (userAnswers[idx] === null && idx < questions.length - 1) ? 'inline' : 'none';
 
-            showResults() {
-                document.getElementById('quiz-screen').classList.add('hidden');
-                document.getElementById('result-screen').classList.remove('hidden');
-                const percent = Math.round((this.score / this.shuffled.length) * 100);
-                document.getElementById('final-score').innerText = percent + '%';
-                document.getElementById('final-stats').innerText = `You got ${this.score} out of ${this.shuffled.length} questions correct.`;
-            }
+  // Progress
+  const pct = ((idx+1) / questions.length * 100).toFixed(1);
+  document.getElementById('prog-bar').style.width = pct + '%';
 
-            reset() {
-                this.currentIdx = 0;
-                this.score = 0;
-                document.getElementById('result-screen').classList.add('hidden');
-                this.start();
-            }
-        }
+  // Score display
+  document.getElementById('score-live').textContent = score;
+  document.getElementById('answered-live').textContent = answered;
 
-        const quiz = new Quiz(questions);
-    </script>
+  // Rebuild card animation
+  const card = document.getElementById('card');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = 'fadeSlide 0.3s ease';
+}
+
+function selectAnswer(qIdx, choiceIdx) {
+  if (userAnswers[qIdx] !== null) return;
+  userAnswers[qIdx] = choiceIdx;
+  answered++;
+  if (choiceIdx === questions[qIdx].ans) score++;
+  renderQuestion(qIdx);
+}
+
+function goQuestion(idx) {
+  if (idx < 0 || idx >= questions.length) return;
+  current = idx;
+  renderQuestion(current);
+}
+
+function skipQuestion() {
+  if (current < questions.length - 1) goQuestion(current + 1);
+}
+
+function finishQuiz() {
+  document.getElementById('quiz-screen').style.display = 'none';
+  const rs = document.getElementById('results-screen');
+  rs.style.display = 'block';
+
+  const total = questions.length;
+  const skipped = total - answered;
+  const pct = Math.round(score / total * 100);
+  const passing = pct >= 70;
+
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('r-correct').textContent = score;
+  document.getElementById('r-wrong').textContent = answered - score;
+  document.getElementById('r-skipped').textContent = skipped;
+  document.getElementById('result-title').textContent = passing ? 'Well Done!' : 'Keep Practicing';
+  document.getElementById('result-sub').textContent = `// ${score} correct out of ${total} questions`;
+
+  const ring = document.getElementById('score-ring');
+  if (!passing) ring.classList.add('bad');
+  setTimeout(() => {
+    const circumference = 2 * Math.PI * 70;
+    const fill = (pct / 100) * circumference;
+    document.getElementById('score-circle').style.strokeDasharray = `${fill} ${circumference}`;
+  }, 100);
+
+  // Review list — only show wrong/skipped
+  const rl = document.getElementById('review-list');
+  rl.innerHTML = '<h3 style="font-size:16px;letter-spacing:2px;margin-bottom:16px;color:var(--muted);font-family:var(--mono);">// Review Missed Questions</h3>';
+  const letters = ['A','B','C','D'];
+  let hasMissed = false;
+  questions.forEach((q, i) => {
+    const ua = userAnswers[i];
+    if (ua === q.ans) return; // skip correct
+    hasMissed = true;
+    const correct = ua === q.ans;
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (ua === null ? 'r-wrong' : (correct ? 'r-correct' : 'r-wrong'));
+    const shortQ = q.q.split('\n')[0].substring(0, 100) + (q.q.length > 100 ? '...' : '');
+    div.innerHTML = `
+      <div class="review-q-num">Q${String(i+1).padStart(2,'0')} · ${ua === null ? 'SKIPPED' : 'INCORRECT'}</div>
+      <div class="review-q-text">${shortQ}</div>
+      <div class="review-answers">
+        ${ua !== null ? `<span class="ry">Your answer: ${letters[ua]}. ${q.opts[ua]}</span><br>` : ''}
+        <span class="rc">✔ Correct: ${letters[q.ans]}. ${q.opts[q.ans]}</span>
+      </div>`;
+    rl.appendChild(div);
+  });
+  if (!hasMissed) {
+    rl.innerHTML += '<p style="text-align:center;color:var(--correct);font-family:var(--mono);font-size:13px;">// Perfect score — no questions to review!</p>';
+  }
+}
+
+function restartQuiz() {
+  userAnswers = new Array(questions.length).fill(null);
+  score = 0;
+  answered = 0;
+  current = 0;
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('quiz-screen').style.display = 'block';
+  document.getElementById('score-circle').style.strokeDasharray = '0 440';
+  renderQuestion(0);
+}
+
+// Init
+renderQuestion(0);
+</script>
 </body>
 </html>
