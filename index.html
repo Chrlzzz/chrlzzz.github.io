@@ -32,7 +32,6 @@
     align-items: center;
   }
 
-  /* Animated grid bg */
   body::before {
     content: '';
     position: fixed;
@@ -84,6 +83,130 @@
     color: var(--muted);
     margin-top: 6px;
     letter-spacing: 1px;
+  }
+
+  /* ── SHUFFLE TOGGLE ── */
+  .shuffle-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 4px 0 18px;
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background: rgba(0,200,255,0.02);
+    flex-wrap: wrap;
+  }
+  .shuffle-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .shuffle-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toggle-track {
+    width: 40px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-track::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .shuffle-toggle.on .toggle-track {
+    border-color: var(--accent);
+    background: rgba(0,200,255,0.1);
+  }
+  .shuffle-toggle.on .toggle-track::after {
+    transform: translateX(20px);
+    background: var(--accent);
+  }
+  .toggle-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    transition: color 0.2s;
+    min-width: 28px;
+  }
+  .shuffle-toggle.on .toggle-text { color: var(--accent); }
+
+  .shuffle-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+  }
+  .shuffle-opts {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .shuffle-opt-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    text-transform: uppercase;
+  }
+  .shuffle-opt-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .shuffle-opt-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,200,255,0.08);
+  }
+  .shuffle-opt-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: var(--border);
+    color: var(--muted);
+    background: transparent;
+  }
+
+  /* shuffled indicator on card */
+  .shuffle-pill {
+    display: none;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    border: 1px solid rgba(0,200,255,0.3);
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 10px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    animation: pulse-badge 2s infinite;
+  }
+  @keyframes pulse-badge {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
   }
 
   /* ── PROGRESS ── */
@@ -138,6 +261,8 @@
     color: var(--accent);
     letter-spacing: 2px;
     margin-bottom: 14px;
+    display: flex;
+    align-items: center;
   }
   .q-text {
     font-size: 16px;
@@ -146,8 +271,6 @@
     color: #e4eef8;
     margin-bottom: 22px;
   }
-
-  /* code-like block inside question */
   .q-text code {
     display: block;
     font-family: var(--mono);
@@ -192,19 +315,16 @@
     transition: color 0.15s;
   }
   .option.selected .option-letter { color: var(--accent); }
-
   .option.correct {
     border-color: var(--correct);
     background: rgba(0,230,118,0.07);
   }
   .option.correct .option-letter { color: var(--correct); }
-
   .option.wrong {
     border-color: var(--wrong);
     background: rgba(255,23,68,0.07);
   }
   .option.wrong .option-letter { color: var(--wrong); }
-
   .option.locked { cursor: default; }
 
   /* ── FEEDBACK ── */
@@ -363,7 +483,6 @@
   .stat-val.r { color: var(--wrong); }
   .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
 
-  /* review list */
   .review-list { text-align: left; margin-top: 28px; }
   .review-item {
     border: 1px solid var(--border);
@@ -389,10 +508,10 @@
   .review-answers .ry { color: var(--text); }
   .review-answers .rc { color: var(--correct); }
 
-  /* scroll to top */
   @media (max-width: 600px) {
     .card { padding: 20px 16px; }
     .btn  { padding: 10px 18px; font-size: 13px; }
+    .shuffle-bar { gap: 10px; }
   }
 </style>
 </head>
@@ -403,6 +522,22 @@
     <h1><span>SPLK</span>-5001 Practice Quiz</h1>
     <p class="subtitle">// 66 questions · Cybersecurity Defense Analyst</p>
   </header>
+
+  <!-- SHUFFLE CONTROLS -->
+  <div class="shuffle-bar">
+    <span class="shuffle-label">// Randomize</span>
+    <div class="shuffle-toggle" id="shuffle-toggle" onclick="toggleShuffle()">
+      <div class="toggle-track"></div>
+      <span class="toggle-text" id="toggle-text">OFF</span>
+    </div>
+    <div class="shuffle-divider"></div>
+    <div class="shuffle-opts">
+      <button class="shuffle-opt-btn active" id="opt-questions" onclick="toggleShuffleOpt('questions')" title="Shuffle question order">⇄ Questions</button>
+      <button class="shuffle-opt-btn active" id="opt-choices" onclick="toggleShuffleOpt('choices')" title="Shuffle answer choices">⇄ Choices</button>
+    </div>
+    <div class="shuffle-divider"></div>
+    <button class="btn-skip" id="btn-reshuffle" onclick="applyShuffleAndRestart()" style="display:none; font-size:10px; letter-spacing:1.5px;">↺ RE-SHUFFLE</button>
+  </div>
 
   <!-- QUIZ SCREEN -->
   <div id="quiz-screen">
@@ -457,7 +592,8 @@
 </div>
 
 <script>
-const questions = [
+// ─── MASTER QUESTION BANK ───────────────────────────────────────────────────
+const masterQuestions = [
   {
     q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of implementing the new process or solution that was selected?",
     opts: ["Security Architect","SOC Manager","Security Engineer","Security Analyst"],
@@ -981,27 +1117,126 @@ const questions = [
   }
 ];
 
-// State
+// ─── SHUFFLE SETTINGS ───────────────────────────────────────────────────────
+let shuffleMode     = false;
+let shuffleQuestions = true;   // whether to shuffle question order
+let shuffleChoices   = true;   // whether to shuffle answer choices
+
+// ─── ACTIVE QUESTION SET (built on each shuffle apply) ──────────────────────
+let questions = masterQuestions.slice(); // starts as ordered copy
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
 let current = 0;
 let userAnswers = new Array(questions.length).fill(null);
 let score = 0;
 let answered = 0;
 
+// ─── FISHER-YATES SHUFFLE ───────────────────────────────────────────────────
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─── BUILD ACTIVE QUESTION SET ──────────────────────────────────────────────
+function buildQuestionSet() {
+  let pool = masterQuestions.map((q, origIdx) => ({
+    origIdx,
+    q: q.q,
+    opts: q.opts.slice(),
+    ans: q.ans,
+    exp: q.exp
+  }));
+
+  // Shuffle question order
+  if (shuffleMode && shuffleQuestions) {
+    pool = shuffleArray(pool);
+  }
+
+  // Shuffle choices per question
+  if (shuffleMode && shuffleChoices) {
+    pool = pool.map(q => {
+      const correctText = q.opts[q.ans];
+      const indices = q.opts.map((_, i) => i);
+      const shuffledIndices = shuffleArray(indices);
+      const newOpts = shuffledIndices.map(i => q.opts[i]);
+      const newAns = newOpts.indexOf(correctText);
+      return { ...q, opts: newOpts, ans: newAns };
+    });
+  }
+
+  return pool;
+}
+
+// ─── SHUFFLE TOGGLE UI ───────────────────────────────────────────────────────
+function toggleShuffle() {
+  shuffleMode = !shuffleMode;
+  const toggle = document.getElementById('shuffle-toggle');
+  const text   = document.getElementById('toggle-text');
+  const reshuffleBtn = document.getElementById('btn-reshuffle');
+  const optBtns = document.querySelectorAll('.shuffle-opt-btn');
+
+  if (shuffleMode) {
+    toggle.classList.add('on');
+    text.textContent = 'ON';
+    reshuffleBtn.style.display = 'inline';
+    optBtns.forEach(b => b.disabled = false);
+  } else {
+    toggle.classList.remove('on');
+    text.textContent = 'OFF';
+    reshuffleBtn.style.display = 'none';
+    optBtns.forEach(b => b.disabled = false);
+  }
+  applyShuffleAndRestart();
+}
+
+function toggleShuffleOpt(type) {
+  if (type === 'questions') {
+    shuffleQuestions = !shuffleQuestions;
+    document.getElementById('opt-questions').classList.toggle('active', shuffleQuestions);
+  } else {
+    shuffleChoices = !shuffleChoices;
+    document.getElementById('opt-choices').classList.toggle('active', shuffleChoices);
+  }
+  if (shuffleMode) applyShuffleAndRestart();
+}
+
+function applyShuffleAndRestart() {
+  questions = buildQuestionSet();
+  userAnswers = new Array(questions.length).fill(null);
+  score = 0;
+  answered = 0;
+  current = 0;
+
+  // Update total label
+  document.querySelector('.subtitle').textContent =
+    `// ${questions.length} questions · Cybersecurity Defense Analyst` +
+    (shuffleMode ? ' · SHUFFLED' : '');
+
+  renderQuestion(0);
+}
+
+// ─── RENDER ─────────────────────────────────────────────────────────────────
 function renderQuestion(idx) {
   const q = questions[idx];
-  document.getElementById('q-num-label').textContent = `QUESTION ${String(idx+1).padStart(2,'0')}`;
-  document.getElementById('q-current').textContent = idx+1;
+  const label = `QUESTION ${String(idx+1).padStart(2,'0')}`;
+  const pill  = shuffleMode
+    ? `<span class="shuffle-pill">shuffled</span>`
+    : '';
+  document.getElementById('q-num-label').innerHTML = label + pill;
+  document.getElementById('q-current').textContent = idx + 1;
 
-  // Format question text with code blocks
+  // Format question text
   let qText = q.q;
-  // Replace lines that look like code/SPL with code elements
-  qText = qText.replace(/\n((?:index=|eval |stats |rex |makeresults|147\.\d|\|)[^\n]+)/g, (m, p1) => `\n<code>${p1}</code>`);
-  // Handle numbered lists in question text
+  qText = qText.replace(/\n((?:index=|eval |stats |rex |makeresults|147\.\d|\|)[^\n]+)/g,
+    (m, p1) => `\n<code>${p1}</code>`);
   qText = qText.replace(/\n(\d+\. )/g, '\n$1');
-  // Replace remaining newlines
-  const parts = qText.split('\n');
-  document.getElementById('q-text').innerHTML = parts.join('<br>');
+  document.getElementById('q-text').innerHTML = qText.split('\n').join('<br>');
 
+  // Options
   const optsEl = document.getElementById('options');
   optsEl.innerHTML = '';
   const letters = ['A','B','C','D'];
@@ -1013,7 +1248,7 @@ function renderQuestion(idx) {
 
     if (userAnswers[idx] !== null) {
       div.classList.add('locked');
-      if (i === q.ans) div.classList.add('correct');
+      if (i === q.ans)            div.classList.add('correct');
       else if (i === userAnswers[idx]) div.classList.add('wrong');
     } else {
       div.onclick = () => selectAnswer(idx, i);
@@ -1024,33 +1259,36 @@ function renderQuestion(idx) {
   // Feedback
   const fb = document.getElementById('feedback');
   fb.className = 'feedback';
-  fb.textContent = '';
+  fb.innerHTML = '';
   if (userAnswers[idx] !== null) {
     const correct = userAnswers[idx] === q.ans;
     fb.className = 'feedback ' + (correct ? 'correct-fb' : 'wrong-fb');
-    fb.innerHTML = (correct ? '' : `Correct answer: <strong>${letters[q.ans]}. ${q.opts[q.ans]}</strong><br><br>`) + q.exp;
+    fb.innerHTML = (!correct
+      ? `Correct answer: <strong>${letters[q.ans]}. ${q.opts[q.ans]}</strong><br><br>`
+      : '') + q.exp;
   }
 
   // Nav
   document.getElementById('btn-prev').disabled = idx === 0;
-  document.getElementById('btn-next').disabled = userAnswers[idx] === null || idx === questions.length - 1;
-  document.getElementById('btn-skip').style.display = (userAnswers[idx] === null && idx < questions.length - 1) ? 'inline' : 'none';
+  document.getElementById('btn-next').disabled =
+    userAnswers[idx] === null || idx === questions.length - 1;
+  document.getElementById('btn-skip').style.display =
+    (userAnswers[idx] === null && idx < questions.length - 1) ? 'inline' : 'none';
 
   // Progress
-  const pct = ((idx+1) / questions.length * 100).toFixed(1);
+  const pct = ((idx + 1) / questions.length * 100).toFixed(1);
   document.getElementById('prog-bar').style.width = pct + '%';
-
-  // Score display
-  document.getElementById('score-live').textContent = score;
+  document.getElementById('score-live').textContent  = score;
   document.getElementById('answered-live').textContent = answered;
 
-  // Rebuild card animation
+  // Card animation
   const card = document.getElementById('card');
   card.style.animation = 'none';
   card.offsetHeight;
   card.style.animation = 'fadeSlide 0.3s ease';
 }
 
+// ─── INTERACTIONS ────────────────────────────────────────────────────────────
 function selectAnswer(qIdx, choiceIdx) {
   if (userAnswers[qIdx] !== null) return;
   userAnswers[qIdx] = choiceIdx;
@@ -1069,43 +1307,46 @@ function skipQuestion() {
   if (current < questions.length - 1) goQuestion(current + 1);
 }
 
+// ─── FINISH ──────────────────────────────────────────────────────────────────
 function finishQuiz() {
   document.getElementById('quiz-screen').style.display = 'none';
   const rs = document.getElementById('results-screen');
   rs.style.display = 'block';
 
-  const total = questions.length;
+  const total   = questions.length;
   const skipped = total - answered;
-  const pct = Math.round(score / total * 100);
+  const pct     = Math.round(score / total * 100);
   const passing = pct >= 70;
 
-  document.getElementById('score-pct').textContent = pct + '%';
-  document.getElementById('r-correct').textContent = score;
-  document.getElementById('r-wrong').textContent = answered - score;
-  document.getElementById('r-skipped').textContent = skipped;
+  document.getElementById('score-pct').textContent   = pct + '%';
+  document.getElementById('r-correct').textContent   = score;
+  document.getElementById('r-wrong').textContent     = answered - score;
+  document.getElementById('r-skipped').textContent   = skipped;
   document.getElementById('result-title').textContent = passing ? 'Well Done!' : 'Keep Practicing';
-  document.getElementById('result-sub').textContent = `// ${score} correct out of ${total} questions`;
+  document.getElementById('result-sub').textContent  =
+    `// ${score} correct out of ${total} questions` +
+    (shuffleMode ? ' · shuffled mode' : '');
 
   const ring = document.getElementById('score-ring');
-  if (!passing) ring.classList.add('bad');
+  ring.classList.toggle('bad', !passing);
   setTimeout(() => {
     const circumference = 2 * Math.PI * 70;
     const fill = (pct / 100) * circumference;
     document.getElementById('score-circle').style.strokeDasharray = `${fill} ${circumference}`;
   }, 100);
 
-  // Review list — only show wrong/skipped
+  // Review missed questions
   const rl = document.getElementById('review-list');
   rl.innerHTML = '<h3 style="font-size:16px;letter-spacing:2px;margin-bottom:16px;color:var(--muted);font-family:var(--mono);">// Review Missed Questions</h3>';
   const letters = ['A','B','C','D'];
   let hasMissed = false;
+
   questions.forEach((q, i) => {
     const ua = userAnswers[i];
-    if (ua === q.ans) return; // skip correct
+    if (ua === q.ans) return;
     hasMissed = true;
-    const correct = ua === q.ans;
     const div = document.createElement('div');
-    div.className = 'review-item ' + (ua === null ? 'r-wrong' : (correct ? 'r-correct' : 'r-wrong'));
+    div.className = 'review-item ' + (ua === null ? 'r-wrong' : 'r-wrong');
     const shortQ = q.q.split('\n')[0].substring(0, 100) + (q.q.length > 100 ? '...' : '');
     div.innerHTML = `
       <div class="review-q-num">Q${String(i+1).padStart(2,'0')} · ${ua === null ? 'SKIPPED' : 'INCORRECT'}</div>
@@ -1116,23 +1357,28 @@ function finishQuiz() {
       </div>`;
     rl.appendChild(div);
   });
+
   if (!hasMissed) {
     rl.innerHTML += '<p style="text-align:center;color:var(--correct);font-family:var(--mono);font-size:13px;">// Perfect score — no questions to review!</p>';
   }
 }
 
+// ─── RESTART ─────────────────────────────────────────────────────────────────
 function restartQuiz() {
+  // Re-apply shuffle if active, otherwise reset to original order
+  questions = buildQuestionSet();
   userAnswers = new Array(questions.length).fill(null);
   score = 0;
   answered = 0;
   current = 0;
+
   document.getElementById('results-screen').style.display = 'none';
   document.getElementById('quiz-screen').style.display = 'block';
   document.getElementById('score-circle').style.strokeDasharray = '0 440';
   renderQuestion(0);
 }
 
-// Init
+// ─── INIT ────────────────────────────────────────────────────────────────────
 renderQuestion(0);
 </script>
 </body>
