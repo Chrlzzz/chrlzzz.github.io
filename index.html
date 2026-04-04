@@ -418,14 +418,14 @@
   <input type="text" id="search-input" placeholder="🔍  Search topics...">
   <div class="nav-section">
     <div class="nav-group-label">Core Topics</div>
-    <a class="nav-item" onclick="scrollTo('s1')"><span class="nav-num">01</span>Analog Communications</a>
-    <a class="nav-item" onclick="scrollTo('s2')"><span class="nav-num">02</span>Information Theory</a>
-    <a class="nav-item" onclick="scrollTo('s3')"><span class="nav-num">03</span>Digital Communications</a>
-    <a class="nav-item" onclick="scrollTo('s4')"><span class="nav-num">04</span>Transmission Lines & Fibers</a>
-    <a class="nav-item" onclick="scrollTo('s5')"><span class="nav-num">05</span>Wave Propagation & Antennas</a>
-    <a class="nav-item" onclick="scrollTo('s6')"><span class="nav-num">06</span>Signals & Signal Processing</a>
-    <a class="nav-item" onclick="scrollTo('s7')"><span class="nav-num">07</span>Data Comms & Networks</a>
-    <a class="nav-item" onclick="scrollTo('s8')"><span class="nav-num">08</span>Advanced Communications</a>
+    <a class="nav-item" onclick="goToSection('s1', this)"><span class="nav-num">01</span>Analog Communications</a>
+    <a class="nav-item" onclick="goToSection('s2', this)"><span class="nav-num">02</span>Information Theory</a>
+    <a class="nav-item" onclick="goToSection('s3', this)"><span class="nav-num">03</span>Digital Communications</a>
+    <a class="nav-item" onclick="goToSection('s4', this)"><span class="nav-num">04</span>Transmission Lines & Fibers</a>
+    <a class="nav-item" onclick="goToSection('s5', this)"><span class="nav-num">05</span>Wave Propagation & Antennas</a>
+    <a class="nav-item" onclick="goToSection('s6', this)"><span class="nav-num">06</span>Signals & Signal Processing</a>
+    <a class="nav-item" onclick="goToSection('s7', this)"><span class="nav-num">07</span>Data Comms & Networks</a>
+    <a class="nav-item" onclick="goToSection('s8', this)"><span class="nav-num">08</span>Advanced Communications</a>
   </div>
 </nav>
 
@@ -1444,11 +1444,11 @@
 
 <script>
   // Smooth scroll to section
-  function scrollTo(id) {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  function goToSection(id, el) {
+    const target = document.getElementById(id);
+    if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    event.target.classList.add('active');
+    if (el) el.classList.add('active');
   }
 
   // Progress bar
@@ -1482,7 +1482,7 @@
       if (entry.isIntersecting) {
         const id = entry.target.id;
         navItems.forEach(n => {
-          n.classList.toggle('active', n.getAttribute('onclick') && n.getAttribute('onclick').includes(id));
+          n.classList.toggle('active', n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'"));
         });
       }
     });
