@@ -1,1385 +1,1493 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SPLK-5001 Practice Quiz</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Broadkast ng Talino — Communications Reviewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0d14;
-    --panel: #0f1420;
+    --bg: #080c14;
+    --surface: #0d1420;
+    --surface2: #111b2e;
     --border: #1e2d45;
-    --accent: #00c8ff;
-    --accent2: #ff6b35;
-    --correct: #00e676;
-    --wrong: #ff1744;
-    --text: #c9d8e8;
-    --muted: #5a7291;
-    --mono: 'Share Tech Mono', monospace;
-    --sans: 'Rajdhani', sans-serif;
+    --cyan: #00e5ff;
+    --amber: #ffb300;
+    --green: #00e676;
+    --red: #ff5252;
+    --pink: #ff4081;
+    --text: #cdd9f0;
+    --muted: #5a7399;
+    --heading: #e8f0ff;
+    --formula-bg: #0a1929;
+    --tag-bg: #0d2137;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
+  html { scroll-behavior: smooth; }
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
+    font-family: 'Syne', sans-serif;
+    display: flex;
     min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: 270px;
+    min-width: 270px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    z-index: 100;
   }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,200,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,200,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, #0a1929 0%, #071220 100%);
   }
-
-  .wrapper {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    max-width: 820px;
-    padding: 24px 16px 60px;
-  }
-
-  /* ── HEADER ── */
-  header {
-    text-align: center;
-    padding: 32px 0 24px;
-  }
-  .badge {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: var(--accent);
+  .sidebar-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    border: 1px solid var(--accent);
-    display: inline-block;
-    padding: 4px 14px;
-    margin-bottom: 14px;
-    opacity: 0.8;
+    color: var(--cyan);
+    line-height: 1.3;
   }
-  header h1 {
-    font-size: clamp(26px, 5vw, 38px);
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #fff;
-    text-transform: uppercase;
-  }
-  header h1 span { color: var(--accent); }
-  .subtitle {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 6px;
-    letter-spacing: 1px;
-  }
-
-  /* ── SHUFFLE TOGGLE ── */
-  .shuffle-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin: 4px 0 18px;
-    padding: 10px 18px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    background: rgba(0,200,255,0.02);
-    flex-wrap: wrap;
-  }
-  .shuffle-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-  }
-  .shuffle-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-  }
-  .toggle-track {
-    width: 40px;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
+  .sidebar-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+  #search-input {
+    margin: 14px 16px;
+    padding: 8px 12px;
     background: var(--bg);
-    position: relative;
-    transition: border-color 0.2s, background 0.2s;
-    flex-shrink: 0;
-  }
-  .toggle-track::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--muted);
-    transition: transform 0.2s, background 0.2s;
-  }
-  .shuffle-toggle.on .toggle-track {
-    border-color: var(--accent);
-    background: rgba(0,200,255,0.1);
-  }
-  .shuffle-toggle.on .toggle-track::after {
-    transform: translateX(20px);
-    background: var(--accent);
-  }
-  .toggle-text {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    transition: color 0.2s;
-    min-width: 28px;
-  }
-  .shuffle-toggle.on .toggle-text { color: var(--accent); }
-
-  .shuffle-divider {
-    width: 1px;
-    height: 16px;
-    background: var(--border);
-  }
-  .shuffle-opts {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .shuffle-opt-btn {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 4px 10px;
-    border-radius: 3px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
-    text-transform: uppercase;
-  }
-  .shuffle-opt-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .shuffle-opt-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(0,200,255,0.08);
-  }
-  .shuffle-opt-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    border-color: var(--border);
-    color: var(--muted);
-    background: transparent;
-  }
-
-  /* shuffled indicator on card */
-  .shuffle-pill {
-    display: none;
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 1.5px;
-    color: var(--accent);
-    border: 1px solid rgba(0,200,255,0.3);
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 10px;
-    vertical-align: middle;
-    text-transform: uppercase;
-    animation: pulse-badge 2s infinite;
-  }
-  @keyframes pulse-badge {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 1; }
-  }
-
-  /* ── PROGRESS ── */
-  .progress-bar-wrap {
-    background: var(--border);
-    height: 3px;
-    border-radius: 2px;
-    margin: 20px 0 8px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), #0066ff);
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
-  .progress-meta {
-    display: flex;
-    justify-content: space-between;
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-  .progress-meta span { color: var(--accent); }
-
-  /* ── QUESTION CARD ── */
-  .card {
-    background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 28px 28px 22px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    width: calc(100% - 32px);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #search-input:focus { border-color: var(--cyan); }
+  #search-input::placeholder { color: var(--muted); }
+  .nav-section { padding: 8px 0; }
+  .nav-group-label {
+    padding: 6px 20px 4px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.7;
+  }
+  .nav-item {
+    display: block;
+    padding: 8px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    line-height: 1.4;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--cyan); border-left-color: var(--cyan); }
+  .nav-item.active { background: var(--surface2); color: var(--cyan); border-left-color: var(--cyan); }
+  .nav-num {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background: var(--border);
+    border-radius: 3px;
+    text-align: center;
+    line-height: 18px;
+    font-size: 9px;
+    margin-right: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+  }
+
+  /* MAIN */
+  #main {
+    flex: 1;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  .page-hero {
+    background: linear-gradient(135deg, #07111f 0%, #0a1929 50%, #071220 100%);
+    padding: 52px 52px 40px;
+    border-bottom: 1px solid var(--border);
     position: relative;
     overflow: hidden;
-    animation: fadeSlide 0.3s ease;
   }
-  @keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .card::before {
-    content: '';
+  .page-hero::before {
+    content: 'BROADKAST NG TALINO';
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), transparent);
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%);
+    font-size: 120px;
+    font-weight: 800;
+    color: rgba(0,229,255,0.03);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    pointer-events: none;
   }
+  .hero-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 4px 12px;
+    border-radius: 3px;
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--heading);
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .hero-title span { color: var(--cyan); }
+  .hero-desc { font-size: 14px; color: var(--muted); max-width: 600px; line-height: 1.7; }
+  .topic-count {
+    display: flex; gap: 20px; margin-top: 24px;
+  }
+  .tc { text-align: center; }
+  .tc-num { font-size: 28px; font-weight: 800; color: var(--cyan); font-family: 'Space Mono', monospace; }
+  .tc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
 
-  .q-number {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 2px;
-    margin-bottom: 14px;
+  /* CONTENT */
+  .content { padding: 0 52px 80px; }
+  .section-block {
+    margin-top: 52px;
+    scroll-margin-top: 20px;
+  }
+  .section-header {
     display: flex;
     align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
   }
-  .q-text {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.6;
-    color: #e4eef8;
-    margin-bottom: 22px;
+  .section-num {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
   }
-  .q-text code {
-    display: block;
-    font-family: var(--mono);
-    font-size: 12px;
-    background: rgba(0,200,255,0.05);
-    border-left: 2px solid var(--accent);
-    padding: 10px 14px;
-    margin: 12px 0;
-    border-radius: 0 4px 4px 0;
-    color: #8ecfff;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
+  .section-title { font-size: 22px; font-weight: 800; color: var(--heading); line-height: 1.2; }
+  .section-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; letter-spacing: 0.05em; }
 
-  /* ── OPTIONS ── */
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .option {
+  /* color themes per section */
+  .s1 .section-num { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.2); }
+  .s2 .section-num { background: rgba(255,179,0,0.1); color: var(--amber); border: 1px solid rgba(255,179,0,0.2); }
+  .s3 .section-num { background: rgba(0,230,118,0.1); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .s4 .section-num { background: rgba(255,82,82,0.1); color: var(--red); border: 1px solid rgba(255,82,82,0.2); }
+  .s5 .section-num { background: rgba(255,64,129,0.1); color: var(--pink); border: 1px solid rgba(255,64,129,0.2); }
+  .s6 .section-num { background: rgba(179,136,255,0.1); color: #b388ff; border: 1px solid rgba(179,136,255,0.2); }
+  .s7 .section-num { background: rgba(100,255,218,0.1); color: #64ffda; border: 1px solid rgba(100,255,218,0.2); }
+  .s8 .section-num { background: rgba(255,214,0,0.1); color: #ffd600; border: 1px solid rgba(255,214,0,0.2); }
+
+  /* CARDS GRID */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--cyan); transform: translateY(-2px); }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--heading);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .d-cyan { background: var(--cyan); }
+  .d-amber { background: var(--amber); }
+  .d-green { background: var(--green); }
+  .d-red { background: var(--red); }
+  .d-pink { background: var(--pink); }
+  .d-purple { background: #b388ff; }
+  .d-teal { background: #64ffda; }
+  .d-yellow { background: #ffd600; }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--formula-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: #e8f4ff;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+  .formula-box.amber { border-left-color: var(--amber); }
+  .formula-box.green { border-left-color: var(--green); }
+  .formula-box.red { border-left-color: var(--red); }
+  .formula-box.pink { border-left-color: var(--pink); }
+  .formula-box.purple { border-left-color: #b388ff; }
+  .formula-box.teal { border-left-color: #64ffda; }
+  .formula-box.yellow { border-left-color: #ffd600; }
+
+  .fvar { color: var(--cyan); font-style: italic; }
+  .fval { color: var(--amber); }
+  .fop { color: var(--muted); }
+  .funit { color: var(--green); font-size: 11px; }
+  .fname { color: #e8f4ff; font-weight: 500; }
+  .fcomment { color: var(--muted); font-size: 11px; }
+
+  /* KEY-VALUE LIST */
+  .kv-list { list-style: none; }
+  .kv-list li {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 13px 16px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
-    background: rgba(255,255,255,0.01);
-    font-size: 15px;
-    font-weight: 500;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(30,45,69,0.5);
+    font-size: 13px;
     line-height: 1.5;
   }
-  .option:hover:not(.locked) {
-    border-color: var(--accent);
-    background: rgba(0,200,255,0.05);
-    transform: translateX(3px);
-  }
-  .option-letter {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    min-width: 18px;
-    margin-top: 2px;
-    transition: color 0.15s;
-  }
-  .option.selected .option-letter { color: var(--accent); }
-  .option.correct {
-    border-color: var(--correct);
-    background: rgba(0,230,118,0.07);
-  }
-  .option.correct .option-letter { color: var(--correct); }
-  .option.wrong {
-    border-color: var(--wrong);
-    background: rgba(255,23,68,0.07);
-  }
-  .option.wrong .option-letter { color: var(--wrong); }
-  .option.locked { cursor: default; }
-
-  /* ── FEEDBACK ── */
-  .feedback {
-    display: none;
-    margin-top: 18px;
-    padding: 14px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    line-height: 1.6;
-    animation: fadeSlide 0.2s ease;
-  }
-  .feedback.correct-fb {
-    display: block;
-    background: rgba(0,230,118,0.08);
-    border: 1px solid rgba(0,230,118,0.3);
-    color: #9effd1;
-  }
-  .feedback.correct-fb::before {
-    content: '✔  CORRECT — ';
-    font-family: var(--mono);
+  .kv-list li:last-child { border-bottom: none; }
+  .kv-key {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    letter-spacing: 1px;
-    color: var(--correct);
-    font-weight: 700;
-  }
-  .feedback.wrong-fb {
-    display: block;
-    background: rgba(255,23,68,0.08);
-    border: 1px solid rgba(255,23,68,0.3);
-    color: #ffb3be;
-  }
-  .feedback.wrong-fb::before {
-    content: '✘  INCORRECT — ';
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: var(--wrong);
-    font-weight: 700;
-  }
-
-  /* ── NAV ── */
-  .nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 22px;
-    gap: 12px;
-  }
-  .btn {
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 11px 26px;
-    border: 1px solid var(--accent);
+    color: var(--cyan);
+    background: rgba(0,229,255,0.07);
+    padding: 1px 7px;
     border-radius: 3px;
-    background: transparent;
-    color: var(--accent);
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
   }
-  .btn:hover { background: var(--accent); color: #000; transform: translateY(-1px); }
-  .btn:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
-  .btn.primary { background: var(--accent); color: #000; }
-  .btn.primary:hover { background: #33d4ff; }
-  .btn-skip {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    letter-spacing: 1px;
-    padding: 0;
-  }
-  .btn-skip:hover { color: var(--text); }
+  .kv-key.amber { color: var(--amber); background: rgba(255,179,0,0.07); }
+  .kv-key.green { color: var(--green); background: rgba(0,230,118,0.07); }
+  .kv-key.red { color: var(--red); background: rgba(255,82,82,0.07); }
+  .kv-key.pink { color: var(--pink); background: rgba(255,64,129,0.07); }
+  .kv-key.purple { color: #b388ff; background: rgba(179,136,255,0.07); }
+  .kv-key.teal { color: #64ffda; background: rgba(100,255,218,0.07); }
+  .kv-key.yellow { color: #ffd600; background: rgba(255,214,0,0.07); }
+  .kv-val { color: var(--text); }
 
-  /* ── RESULTS ── */
-  #results-screen {
-    display: none;
-    text-align: center;
-    animation: fadeSlide 0.4s ease;
+  /* COMPARISON TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    margin: 12px 0;
   }
-  .score-ring {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 32px auto 20px;
-  }
-  .score-ring svg { transform: rotate(-90deg); }
-  .score-ring circle { fill: none; stroke-width: 10; }
-  .score-ring .bg-c { stroke: var(--border); }
-  .score-ring .fg-c {
-    stroke: var(--correct);
-    stroke-dasharray: 0 440;
-    transition: stroke-dasharray 1.2s cubic-bezier(0.4,0,0.2,1);
-  }
-  .score-ring.bad .fg-c { stroke: var(--accent2); }
-  .score-text {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  .score-pct {
-    font-family: var(--mono);
-    font-size: 36px;
-    color: #fff;
-    line-height: 1;
-  }
-  .score-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-top: 4px;
-  }
-  .result-title {
-    font-size: 24px;
+  th {
+    background: var(--surface2);
+    color: var(--heading);
     font-weight: 700;
-    letter-spacing: 2px;
+    padding: 10px 14px;
+    text-align: left;
+    border: 1px solid var(--border);
+    font-size: 11px;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    letter-spacing: 0.08em;
   }
-  .result-sub {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-  .stats-row {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-bottom: 32px;
-    flex-wrap: wrap;
-  }
-  .stat-box {
-    padding: 16px 24px;
+  td {
+    padding: 9px 14px;
     border: 1px solid var(--border);
-    border-radius: 4px;
-    min-width: 110px;
+    color: var(--text);
+    vertical-align: top;
+    line-height: 1.5;
   }
-  .stat-val {
-    font-family: var(--mono);
-    font-size: 28px;
-    font-weight: 700;
-  }
-  .stat-val.g { color: var(--correct); }
-  .stat-val.r { color: var(--wrong); }
-  .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; }
+  tr:nth-child(even) td { background: rgba(13,26,45,0.4); }
+  tr:hover td { background: rgba(0,229,255,0.03); }
 
-  .review-list { text-align: left; margin-top: 28px; }
-  .review-item {
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    line-height: 1.6;
-    position: relative;
+  /* HIGHLIGHT / CALLOUT */
+  .callout {
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
   }
-  .review-item.r-correct { border-color: rgba(0,230,118,0.25); }
-  .review-item.r-wrong   { border-color: rgba(255,23,68,0.25); }
-  .review-q-num {
-    font-family: var(--mono);
+  .callout.warn { background: rgba(255,179,0,0.05); border-color: rgba(255,179,0,0.2); }
+  .callout.tip { background: rgba(0,230,118,0.05); border-color: rgba(0,230,118,0.2); }
+  .callout .cl { font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 6px; color: var(--cyan); }
+  .callout.warn .cl { color: var(--amber); }
+  .callout.tip .cl { color: var(--green); }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
     font-size: 10px;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    background: var(--tag-bg);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin: 2px;
   }
-  .review-item.r-correct .review-q-num { color: var(--correct); }
-  .review-item.r-wrong   .review-q-num { color: var(--wrong); }
-  .review-q-text { color: #cde; margin-bottom: 8px; font-weight: 600; }
-  .review-answers { font-family: var(--mono); font-size: 12px; }
-  .review-answers .ry { color: var(--text); }
-  .review-answers .rc { color: var(--correct); }
 
-  @media (max-width: 600px) {
-    .card { padding: 20px 16px; }
-    .btn  { padding: 10px 18px; font-size: 13px; }
-    .shuffle-bar { gap: 10px; }
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* WIDE TABLE */
+  .table-wrap { overflow-x: auto; margin: 12px 0; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  h4 { font-size: 14px; font-weight: 700; color: var(--heading); margin: 16px 0 8px; letter-spacing: 0.05em; }
+  p { font-size: 13px; line-height: 1.7; color: var(--text); margin: 6px 0; }
+  ul { padding-left: 18px; }
+  ul li { font-size: 13px; line-height: 1.8; color: var(--text); }
+  strong { color: var(--heading); }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 3px;
+    background: linear-gradient(90deg, var(--cyan), var(--pink));
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    transition: width 0.1s;
   }
+
+  /* SEARCH HIGHLIGHT */
+  .highlight { background: rgba(255,179,0,0.3); color: var(--heading); border-radius: 2px; }
+
+  /* BACK TO TOP */
+  #back-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 42px; height: 42px;
+    background: var(--cyan);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 200;
+  }
+  #back-top.visible { opacity: 1; }
 </style>
 </head>
 <body>
-<div class="wrapper">
-  <header>
-    <div class="badge">Splunk Certification Prep</div>
-    <h1><span>SPLK</span>-5001 Practice Quiz</h1>
-    <p class="subtitle">// 66 questions · Cybersecurity Defense Analyst</p>
-  </header>
+<div class="progress-bar" id="progress"></div>
 
-  <!-- SHUFFLE CONTROLS -->
-  <div class="shuffle-bar">
-    <span class="shuffle-label">// Randomize</span>
-    <div class="shuffle-toggle" id="shuffle-toggle" onclick="toggleShuffle()">
-      <div class="toggle-track"></div>
-      <span class="toggle-text" id="toggle-text">OFF</span>
-    </div>
-    <div class="shuffle-divider"></div>
-    <div class="shuffle-opts">
-      <button class="shuffle-opt-btn active" id="opt-questions" onclick="toggleShuffleOpt('questions')" title="Shuffle question order">⇄ Questions</button>
-      <button class="shuffle-opt-btn active" id="opt-choices" onclick="toggleShuffleOpt('choices')" title="Shuffle answer choices">⇄ Choices</button>
-    </div>
-    <div class="shuffle-divider"></div>
-    <button class="btn-skip" id="btn-reshuffle" onclick="applyShuffleAndRestart()" style="display:none; font-size:10px; letter-spacing:1.5px;">↺ RE-SHUFFLE</button>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-title">Broadkast ng<br>Talino</div>
+    <div class="sidebar-sub">Communications Engineering</div>
   </div>
+  <input type="text" id="search-input" placeholder="🔍  Search topics...">
+  <div class="nav-section">
+    <div class="nav-group-label">Core Topics</div>
+    <a class="nav-item" onclick="scrollTo('s1')"><span class="nav-num">01</span>Analog Communications</a>
+    <a class="nav-item" onclick="scrollTo('s2')"><span class="nav-num">02</span>Information Theory</a>
+    <a class="nav-item" onclick="scrollTo('s3')"><span class="nav-num">03</span>Digital Communications</a>
+    <a class="nav-item" onclick="scrollTo('s4')"><span class="nav-num">04</span>Transmission Lines & Fibers</a>
+    <a class="nav-item" onclick="scrollTo('s5')"><span class="nav-num">05</span>Wave Propagation & Antennas</a>
+    <a class="nav-item" onclick="scrollTo('s6')"><span class="nav-num">06</span>Signals & Signal Processing</a>
+    <a class="nav-item" onclick="scrollTo('s7')"><span class="nav-num">07</span>Data Comms & Networks</a>
+    <a class="nav-item" onclick="scrollTo('s8')"><span class="nav-num">08</span>Advanced Communications</a>
+  </div>
+</nav>
 
-  <!-- QUIZ SCREEN -->
-  <div id="quiz-screen">
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="prog-bar" style="width:0%"></div>
-    </div>
-    <div class="progress-meta">
-      <span>Question <span id="q-current">1</span> of 66</span>
-      <span>Score: <span id="score-live">0</span> / <span id="answered-live">0</span></span>
-    </div>
-
-    <div class="card" id="card">
-      <div class="q-number" id="q-num-label">QUESTION 01</div>
-      <div class="q-text" id="q-text"></div>
-      <div class="options" id="options"></div>
-      <div class="feedback" id="feedback"></div>
-    </div>
-
-    <div class="nav">
-      <button class="btn" id="btn-prev" onclick="goQuestion(current-1)" disabled>← Prev</button>
-      <button class="btn-skip" id="btn-skip" onclick="skipQuestion()">Skip →</button>
-      <button class="btn primary" id="btn-next" onclick="goQuestion(current+1)" disabled>Next →</button>
-    </div>
-    <div style="text-align:center; margin-top:18px;">
-      <button class="btn" onclick="finishQuiz()" style="border-color:var(--accent2);color:var(--accent2);">Finish &amp; See Results</button>
+<!-- MAIN CONTENT -->
+<main id="main">
+  <div class="page-hero">
+    <div class="hero-tag">Quiz Bee Reviewer • ECE Communications</div>
+    <h1 class="hero-title">Broadkast ng <span>Talino</span><br>Master Reviewer</h1>
+    <p class="hero-desc">Complete reference covering all eight topic areas — formulas, key concepts, comparison tables, and memory anchors designed for fast retention and recall under pressure.</p>
+    <div class="topic-count">
+      <div class="tc"><div class="tc-num">8</div><div class="tc-label">Topics</div></div>
+      <div class="tc"><div class="tc-num">60+</div><div class="tc-label">Key Formulas</div></div>
+      <div class="tc"><div class="tc-num">20+</div><div class="tc-label">Tables</div></div>
     </div>
   </div>
 
-  <!-- RESULTS SCREEN -->
-  <div id="results-screen">
-    <div class="badge">Quiz Complete</div>
-    <div class="score-ring" id="score-ring">
-      <svg width="160" height="160" viewBox="0 0 160 160">
-        <circle class="bg-c" cx="80" cy="80" r="70"/>
-        <circle class="fg-c" id="score-circle" cx="80" cy="80" r="70"/>
-      </svg>
-      <div class="score-text">
-        <div class="score-pct" id="score-pct">0%</div>
-        <div class="score-label">Score</div>
+  <div class="content" id="search-content">
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 1: ANALOG COMMUNICATIONS           -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s1" id="s1">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div>
+        <div class="section-title">Analog Communications</div>
+        <div class="section-subtitle">AM · FM · PM · Transmitters · Receivers</div>
       </div>
     </div>
-    <div class="result-title" id="result-title">Results</div>
-    <div class="result-sub" id="result-sub"></div>
-    <div class="stats-row">
-      <div class="stat-box"><div class="stat-val g" id="r-correct">0</div><div class="stat-lbl">Correct</div></div>
-      <div class="stat-box"><div class="stat-val r" id="r-wrong">0</div><div class="stat-lbl">Incorrect</div></div>
-      <div class="stat-box"><div class="stat-val" style="color:var(--muted)" id="r-skipped">0</div><div class="stat-lbl">Skipped</div></div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>AM — Amplitude Modulation</div>
+        <div class="formula-box">
+          <span class="fname">s(t)</span> <span class="fop">=</span> <span class="fvar">A<sub>c</sub></span>[<span class="fval">1</span> <span class="fop">+</span> <span class="fvar">m<sub>a</sub></span>·cos(<span class="fvar">2πf<sub>m</sub>t</span>)] · cos(<span class="fvar">2πf<sub>c</sub>t</span>)
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key">mₐ</span><span class="kv-val">Modulation index = A<sub>m</sub>/A<sub>c</sub> (0 ≤ mₐ ≤ 1 for no overmod.)</span></li>
+          <li><span class="kv-key">BW</span><span class="kv-val">= 2f<sub>m</sub> (DSB) or f<sub>m</sub> (SSB)</span></li>
+          <li><span class="kv-key">P<sub>t</sub></span><span class="kv-val">= P<sub>c</sub>(1 + mₐ²/2) — total DSB-LC power</span></li>
+          <li><span class="kv-key">η</span><span class="kv-val">= mₐ²/(2 + mₐ²) — power efficiency</span></li>
+        </ul>
+        <div class="callout warn">
+          <span class="cl">⚠ Key Fact</span>
+          At mₐ = 1 (100% modulation), efficiency is only <strong>33.3%</strong>. Max sidebands = (mₐ²/4)·P<sub>c</sub> each.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>AM Variants — DSB, SSB, VSB</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Type</th><th>BW</th><th>Carrier</th><th>Use</th></tr>
+            <tr><td>DSB-LC</td><td>2W</td><td>Transmitted</td><td>Broadcast AM</td></tr>
+            <tr><td>DSB-SC</td><td>2W</td><td>Suppressed</td><td>Efficient, needs sync</td></tr>
+            <tr><td>SSB-SC</td><td>W</td><td>Suppressed</td><td>HF voice, most efficient</td></tr>
+            <tr><td>VSB</td><td>~1.25W</td><td>Partial</td><td>TV video (NTSC)</td></tr>
+          </table>
+        </div>
+        <p><em>W</em> = message bandwidth</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>FM — Frequency Modulation</div>
+        <div class="formula-box">
+          <span class="fname">s(t)</span> = <span class="fvar">A<sub>c</sub></span>·cos[<span class="fvar">2πf<sub>c</sub>t</span> + <span class="fvar">β</span>·sin(<span class="fvar">2πf<sub>m</sub>t</span>)]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key">β</span><span class="kv-val">= Δf/f<sub>m</sub> = k<sub>f</sub>·A<sub>m</sub>/f<sub>m</sub> (modulation index)</span></li>
+          <li><span class="kv-key">Δf</span><span class="kv-val">= k<sub>f</sub>·A<sub>m</sub> — max frequency deviation</span></li>
+          <li><span class="kv-key">Carson</span><span class="kv-val">BW ≈ 2(Δf + f<sub>m</sub>) = 2f<sub>m</sub>(β+1)</span></li>
+          <li><span class="kv-key">SNR<sub>FM</sub></span><span class="kv-val">= 3β²(β+1)·SNR<sub>baseband</sub></span></li>
+        </ul>
+        <div class="callout tip">
+          <span class="cl">💡 Remember</span>
+          Broadcast FM: Δf = ±75 kHz, f<sub>m</sub> = 15 kHz → β = 5, BW = 180 kHz
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>PM — Phase Modulation</div>
+        <div class="formula-box">
+          s(t) = A<sub>c</sub>·cos[2πf<sub>c</sub>t + k<sub>p</sub>·m(t)]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key">k<sub>p</sub></span><span class="kv-val">Phase sensitivity (rad/V)</span></li>
+          <li><span class="kv-key">Δφ</span><span class="kv-val">= k<sub>p</sub>·A<sub>m</sub> — max phase deviation</span></li>
+          <li><span class="kv-key">vs FM</span><span class="kv-val">PM β depends on A<sub>m</sub>; FM β depends on f<sub>m</sub></span></li>
+        </ul>
+        <div class="callout">
+          <span class="cl">📌 FM vs PM</span>
+          FM: constant Δf regardless of f<sub>m</sub>. PM: β = k<sub>p</sub>·A<sub>m</sub> (independent of f<sub>m</sub>). You can make FM from PM by pre-integrating m(t).
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>AM Spectra</div>
+        <p>DSB-LC spectrum has 3 components:</p>
+        <ul>
+          <li><strong>Carrier:</strong> at f<sub>c</sub>, power = A<sub>c</sub>²/2</li>
+          <li><strong>USB:</strong> at f<sub>c</sub> + f<sub>m</sub>, power = (mₐA<sub>c</sub>/2)²/2</li>
+          <li><strong>LSB:</strong> at f<sub>c</sub> − f<sub>m</sub>, power = (mₐA<sub>c</sub>/2)²/2</li>
+        </ul>
+        <div class="formula-box">P<sub>USB</sub> = P<sub>LSB</sub> = (mₐ²/4)·P<sub>c</sub></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>FM Spectra — Bessel Functions</div>
+        <p>FM has theoretically infinite sidebands. The nth sideband pair has amplitude J<sub>n</sub>(β):</p>
+        <div class="formula-box">
+          s(t) = A<sub>c</sub> Σ J<sub>n</sub>(β) cos[2π(f<sub>c</sub>+nf<sub>m</sub>)t]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key">Rule</span><span class="kv-val">Sidebands significant if |J<sub>n</sub>(β)| > 0.01</span></li>
+          <li><span class="kv-key">β≪1</span><span class="kv-val">Narrowband FM ≈ AM-like (2 sidebands)</span></li>
+          <li><span class="kv-key">β≫1</span><span class="kv-val">Wideband FM — many sidebands</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>Superheterodyne Receiver</div>
+        <p>Standard AM/FM receiver architecture:</p>
+        <ul>
+          <li><strong>RF Amp</strong> → <strong>Mixer</strong> → <strong>IF Filter</strong> → <strong>Detector</strong> → <strong>Audio Amp</strong></li>
+          <li>AM IF = <strong>455 kHz</strong>; FM IF = <strong>10.7 MHz</strong></li>
+          <li>Image frequency: f<sub>image</sub> = f<sub>s</sub> + 2·f<sub>IF</sub></li>
+          <li>Image rejection ratio (IRR) depends on pre-selector Q</li>
+        </ul>
+        <div class="formula-box amber">
+          f<sub>LO</sub> = f<sub>s</sub> + f<sub>IF</sub>  (high-side injection)
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-cyan"></span>AM Demodulation</div>
+        <ul class="kv-list">
+          <li><span class="kv-key">Envelope</span><span class="kv-val">Diode + RC filter. Simple, no sync needed. RC ≈ 1/(2πf<sub>m</sub>)</span></li>
+          <li><span class="kv-key">Sync Det</span><span class="kv-val">Multiply by local carrier, LPF. Used for DSB-SC, SSB</span></li>
+          <li><span class="kv-key">Squaring</span><span class="kv-val">Square signal, BPF at 2f<sub>c</sub>, divide by 2 → carrier recovery</span></li>
+        </ul>
+        <h4>FM Demodulation</h4>
+        <ul class="kv-list">
+          <li><span class="kv-key">Limiter-Disc</span><span class="kv-val">Foster-Seeley discriminator — most common</span></li>
+          <li><span class="kv-key">PLL</span><span class="kv-val">Phase-locked loop — excellent noise performance</span></li>
+          <li><span class="kv-key">Ratio Det</span><span class="kv-val">Balanced discriminator, amplitude insensitive</span></li>
+        </ul>
+      </div>
     </div>
-    <button class="btn primary" onclick="restartQuiz()" style="margin-bottom:32px;">Restart Quiz</button>
-    <div class="review-list" id="review-list"></div>
   </div>
-</div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 2: INFORMATION THEORY              -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s2" id="s2">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div>
+        <div class="section-title">Information Theory & Random Processes</div>
+        <div class="section-subtitle">Entropy · Channel Capacity · Noise · PSD</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Self-Information & Entropy</div>
+        <div class="formula-box amber">
+          I(x<sub>i</sub>) = log<sub>2</sub>(1/P(x<sub>i</sub>)) = −log<sub>2</sub>P(x<sub>i</sub>)  [bits]
+        </div>
+        <div class="formula-box amber">
+          H(X) = −Σ P(x<sub>i</sub>) · log<sub>2</sub> P(x<sub>i</sub>)  [bits/symbol]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">Max H</span><span class="kv-val">H<sub>max</sub> = log<sub>2</sub>(M) when all symbols equiprobable</span></li>
+          <li><span class="kv-key amber">Units</span><span class="kv-val">log<sub>2</sub>→bits, log<sub>e</sub>→nats, log<sub>10</sub>→Hartleys</span></li>
+          <li><span class="kv-key amber">H(X,Y)</span><span class="kv-val">= H(X) + H(Y|X) — chain rule</span></li>
+        </ul>
+        <div class="callout warn"><span class="cl">📌 Quick</span>Entropy for binary source: H = −p·log p − (1−p)·log(1−p); maximum at p=0.5 → H=1 bit</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Mutual Information & Channel Capacity</div>
+        <div class="formula-box amber">
+          I(X;Y) = H(X) − H(X|Y) = H(Y) − H(Y|X)
+        </div>
+        <div class="formula-box amber">
+          C = B · log<sub>2</sub>(1 + S/N)  [bps] <span class="fcomment">← Shannon-Hartley</span>
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">B</span><span class="kv-val">Channel bandwidth [Hz]</span></li>
+          <li><span class="kv-key amber">S/N</span><span class="kv-val">Signal-to-noise ratio (linear, not dB!)</span></li>
+          <li><span class="kv-key amber">Nyquist</span><span class="kv-val">C = 2B·log<sub>2</sub>(M) — noiseless, M levels</span></li>
+        </ul>
+        <div class="callout tip"><span class="cl">💡</span>Doubling BW &lt; doubling SNR for high SNR — BW is more efficient.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Source Coding Theorems</div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">Shannon 1st</span><span class="kv-val">Average code length L̄ ≥ H(X); can approach H(X) arbitrarily close</span></li>
+          <li><span class="kv-key amber">Huffman</span><span class="kv-val">Optimal prefix-free code. Assign shorter codes to probable symbols</span></li>
+          <li><span class="kv-key amber">Efficiency</span><span class="kv-val">η = H(X) / L̄ × 100%</span></li>
+          <li><span class="kv-key amber">Redundancy</span><span class="kv-val">R = 1 − η</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Channel Coding — Shannon 2nd Theorem</div>
+        <p>If R &lt; C, there exists a code that achieves arbitrarily low error probability.</p>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">Hamming dist</span><span class="kv-val">d<sub>min</sub> = min distance between codewords</span></li>
+          <li><span class="kv-key amber">Error detect</span><span class="kv-val">Detects up to d<sub>min</sub> − 1 errors</span></li>
+          <li><span class="kv-key amber">Error correct</span><span class="kv-val">Corrects up to ⌊(d<sub>min</sub>−1)/2⌋ errors</span></li>
+          <li><span class="kv-key amber">Hamming code</span><span class="kv-val">(2<sup>r</sup>−1, 2<sup>r</sup>−1−r), d<sub>min</sub>=3; r = parity bits</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Random Processes & Autocorrelation</div>
+        <div class="formula-box amber">
+          R<sub>X</sub>(τ) = E[X(t)·X(t+τ)]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">R<sub>X</sub>(0)</span><span class="kv-val">= E[X²] = Total power</span></li>
+          <li><span class="kv-key amber">R<sub>X</sub>(τ)</span><span class="kv-val">= R<sub>X</sub>(−τ) — even function</span></li>
+          <li><span class="kv-key amber">WSS</span><span class="kv-val">Wide-sense stationary: mean constant, R depends only on τ</span></li>
+          <li><span class="kv-key amber">Ergodic</span><span class="kv-val">Time avg = ensemble avg for any realization</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Power Spectral Density (PSD)</div>
+        <div class="formula-box amber">
+          S<sub>X</sub>(f) = ℱ{R<sub>X</sub>(τ)}  [Wiener-Khinchin theorem]
+        </div>
+        <div class="formula-box amber">
+          P<sub>X</sub> = ∫<sub>-∞</sub><sup>∞</sup> S<sub>X</sub>(f) df = R<sub>X</sub>(0)
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">White noise</span><span class="kv-val">S<sub>N</sub>(f) = N₀/2 — flat PSD (all freqs)</span></li>
+          <li><span class="kv-key amber">Filtered</span><span class="kv-val">S<sub>Y</sub>(f) = |H(f)|² · S<sub>X</sub>(f)</span></li>
+          <li><span class="kv-key amber">Bandwidth</span><span class="kv-val">Noise BW B<sub>N</sub> = ∫|H|²df / |H|²<sub>max</sub></span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-amber"></span>Noise & dB Calculations</div>
+        <div class="formula-box amber">
+          NF [dB] = 10·log<sub>10</sub>(F)  where F = SNR<sub>in</sub>/SNR<sub>out</sub>
+        </div>
+        <div class="formula-box amber">
+          F<sub>total</sub> = F₁ + (F₂−1)/G₁ + (F₃−1)/(G₁G₂) + ...  [Friis]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key amber">k</span><span class="kv-val">= 1.38×10⁻²³ J/K (Boltzmann's constant)</span></li>
+          <li><span class="kv-key amber">N</span><span class="kv-val">= kTB — thermal noise power</span></li>
+          <li><span class="kv-key amber">T = 290K</span><span class="kv-val">N = −174 dBm/Hz (standard reference)</span></li>
+          <li><span class="kv-key amber">dBm</span><span class="kv-val">= 10·log<sub>10</sub>(P<sub>mW</sub>) → 1W = +30 dBm</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 3: DIGITAL COMMUNICATIONS         -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s3" id="s3">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div>
+        <div class="section-title">Digital Communications</div>
+        <div class="section-subtitle">Sampling · PCM · Digital Modulation · TDMA/FDMA/CDMA · BER/SNR</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Sampling Theorem</div>
+        <div class="formula-box green">
+          f<sub>s</sub> ≥ 2·f<sub>max</sub>  [Nyquist-Shannon]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key green">Nyquist rate</span><span class="kv-val">f<sub>N</sub> = 2·f<sub>max</sub> — minimum sampling rate</span></li>
+          <li><span class="kv-key green">Aliasing</span><span class="kv-val">Occurs when f<sub>s</sub> &lt; 2f<sub>max</sub> — frequency foldover</span></li>
+          <li><span class="kv-key green">Anti-alias</span><span class="kv-val">LPF before sampler to band-limit signal</span></li>
+          <li><span class="kv-key green">Voice</span><span class="kv-val">f<sub>max</sub>=4kHz → f<sub>s</sub>=8kHz → 8000 samples/s</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Quantization & PCM</div>
+        <div class="formula-box green">
+          Δ = (V<sub>max</sub>−V<sub>min</sub>) / 2<sup>n</sup>  — step size
+        </div>
+        <div class="formula-box green">
+          SQNR ≈ 1.76 + 6.02·n  [dB]  — approx per bit
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key green">n</span><span class="kv-val">Number of bits per sample</span></li>
+          <li><span class="kv-key green">L</span><span class="kv-val">= 2<sup>n</sup> quantization levels</span></li>
+          <li><span class="kv-key green">R<sub>b</sub></span><span class="kv-val">= n · f<sub>s</sub> bits/s — PCM bit rate</span></li>
+          <li><span class="kv-key green">BW<sub>PCM</sub></span><span class="kv-val">≥ n·f<sub>s</sub>/2 Hz (Nyquist signaling)</span></li>
+        </ul>
+        <div class="callout tip"><span class="cl">📌 PCM Voice</span>8-bit, 8kHz → 64 kbps (one DS0 channel)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Companding — µ-law & A-law</div>
+        <div class="formula-box green">
+          µ-law: F(x) = sgn(x)·ln(1+µ|x|)/ln(1+µ)  [µ=255, North America/Japan]
+        </div>
+        <div class="formula-box green">
+          A-law: used in Europe (A=87.6), ITU-T G.711
+        </div>
+        <p>Companding = COMPressing + exPANDING. Improves SNR for low-level signals.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>DPCM & Delta Modulation</div>
+        <ul class="kv-list">
+          <li><span class="kv-key green">DPCM</span><span class="kv-val">Encode difference between sample and prediction; reduces bit rate</span></li>
+          <li><span class="kv-key green">ADPCM</span><span class="kv-val">Adaptive DPCM — variable step size (G.726: 32 kbps)</span></li>
+          <li><span class="kv-key green">DM</span><span class="kv-val">1-bit DPCM; slope overload & granular noise are key distortions</span></li>
+          <li><span class="kv-key green">ADM</span><span class="kv-val">Adaptive DM — varies step size to reduce both distortions</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Multiplexing Techniques</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Type</th><th>How</th><th>Used In</th></tr>
+            <tr><td><strong>TDM</strong></td><td>Time slots per channel</td><td>PCM, T1/E1 carriers</td></tr>
+            <tr><td><strong>FDM</strong></td><td>Frequency slots per channel</td><td>Analog TV, AM radio</td></tr>
+            <tr><td><strong>WDM</strong></td><td>Wavelength slots (optical)</td><td>Fiber optic networks</td></tr>
+            <tr><td><strong>CDM</strong></td><td>Orthogonal codes</td><td>CDMA cellular</td></tr>
+          </table>
+        </div>
+        <div class="callout tip"><span class="cl">T1/E1</span>T1: 24 DS0s × 64kbps = 1.544 Mbps | E1: 32 channels = 2.048 Mbps</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Digital Modulation Summary</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Scheme</th><th>Bits/Symbol</th><th>BW eff.</th><th>BER formula</th></tr>
+            <tr><td>BPSK</td><td>1</td><td>1 bps/Hz</td><td>Q(√(2Eb/N₀))</td></tr>
+            <tr><td>QPSK</td><td>2</td><td>2 bps/Hz</td><td>Q(√(2Eb/N₀))</td></tr>
+            <tr><td>8-PSK</td><td>3</td><td>3 bps/Hz</td><td>≈2Q(√(6Eb/N₀)·sin(π/8))</td></tr>
+            <tr><td>16-QAM</td><td>4</td><td>4 bps/Hz</td><td>≈(3/2)Q(√(4Eb/5N₀))</td></tr>
+            <tr><td>BFSK</td><td>1</td><td>0.5 bps/Hz</td><td>Q(√(Eb/N₀))</td></tr>
+          </table>
+        </div>
+        <div class="formula-box green">Spectral Efficiency = log<sub>2</sub>(M) bps/Hz for M-ary PSK/QAM</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>Multiple Access Techniques</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>TDMA</th><th>FDMA</th><th>CDMA</th></tr>
+            <tr><td>Time division</td><td>Frequency division</td><td>Code division</td></tr>
+            <tr><td>GSM, D-AMPS</td><td>1G (AMPS), FDM</td><td>IS-95, 3G (WCDMA)</td></tr>
+            <tr><td>Synchronization needed</td><td>Guard bands needed</td><td>Soft handoff capable</td></tr>
+            <tr><td>High data per slot</td><td>Simple, no sync</td><td>Interference limited</td></tr>
+          </table>
+        </div>
+        <div class="formula-box green">CDMA Processing Gain = W/R = BW<sub>spread</sub>/R<sub>data</sub> [dB]</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-green"></span>ISI, BER, SNR & Matched Filter</div>
+        <ul class="kv-list">
+          <li><span class="kv-key green">ISI</span><span class="kv-val">Inter-symbol interference — dispersion/multipath. Eye diagram shows ISI.</span></li>
+          <li><span class="kv-key green">Nyquist ISI</span><span class="kv-val">Zero ISI if pulse spectrum is Nyquist: raised cosine filter</span></li>
+          <li><span class="kv-key green">Matched filter</span><span class="kv-val">Maximizes SNR at sampling instant; H(f)=S*(f)·e^(−j2πft₀)</span></li>
+          <li><span class="kv-key green">SNR<sub>max</sub></span><span class="kv-val">= 2E/N₀ at matched filter output</span></li>
+          <li><span class="kv-key green">BER BPSK</span><span class="kv-val">P<sub>e</sub> = Q(√(2Eb/N₀)) — best for PSK</span></li>
+          <li><span class="kv-key green">Q function</span><span class="kv-val">Q(x) = (1/2)erfc(x/√2) ≈ e^(−x²/2)/(x√(2π))</span></li>
+        </ul>
+        <div class="callout tip"><span class="cl">💡 Eye Diagram</span>Wide-open eye = low ISI. Eye closure = high ISI. Optimal sampling at center of eye opening.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 4: TRANSMISSION LINES & FIBERS    -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s4" id="s4">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div>
+        <div class="section-title">Transmission Lines & Optical Fibers</div>
+        <div class="section-subtitle">TL Equations · Impedance · S-params · Smith Chart · Waveguides · Fiber</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Transmission Line Equations</div>
+        <div class="formula-box red">
+          Z₀ = √((R+jωL)/(G+jωC))  [characteristic impedance]
+        </div>
+        <div class="formula-box red">
+          γ = α + jβ = √((R+jωL)(G+jωC))  [propagation constant]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key red">Lossless</span><span class="kv-val">R=G=0 → Z₀=√(L/C), β=ω√(LC), α=0</span></li>
+          <li><span class="kv-key red">v<sub>p</sub></span><span class="kv-val">= ω/β = 1/√(LC) = c/√(ε<sub>r</sub>μ<sub>r</sub>)</span></li>
+          <li><span class="kv-key red">λ</span><span class="kv-val">= v<sub>p</sub>/f = 2π/β</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Reflection & Impedance Transformation</div>
+        <div class="formula-box red">
+          Γ = (Z<sub>L</sub>−Z₀)/(Z<sub>L</sub>+Z₀)  [reflection coefficient]
+        </div>
+        <div class="formula-box red">
+          Z<sub>in</sub> = Z₀·(Z<sub>L</sub>+jZ₀·tan(βl))/(Z₀+jZ<sub>L</sub>·tan(βl))
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key red">SWR</span><span class="kv-val">= (1+|Γ|)/(1−|Γ|) ≥ 1. Perfect match: SWR=1</span></li>
+          <li><span class="kv-key red">λ/4</span><span class="kv-val">Z<sub>in</sub> = Z₀²/Z<sub>L</sub> (quarter-wave transformer)</span></li>
+          <li><span class="kv-key red">λ/2</span><span class="kv-val">Z<sub>in</sub> = Z<sub>L</sub> (half-wave — repeats load)</span></li>
+          <li><span class="kv-key red">Short SC</span><span class="kv-val">Γ=−1, Z<sub>L</sub>=0 → Z<sub>in</sub>=jZ₀tan(βl)</span></li>
+          <li><span class="kv-key red">Open OC</span><span class="kv-val">Γ=+1, Z<sub>L</sub>=∞ → Z<sub>in</sub>=−jZ₀cot(βl)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>S-Parameters</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Parameter</th><th>Meaning</th><th>Notes</th></tr>
+            <tr><td><strong>S₁₁</strong></td><td>Input reflection</td><td>Return loss = −20log|S₁₁|</td></tr>
+            <tr><td><strong>S₂₁</strong></td><td>Forward gain/loss</td><td>Insertion loss = −20log|S₂₁|</td></tr>
+            <tr><td><strong>S₁₂</strong></td><td>Reverse isolation</td><td>S₁₂=S₂₁ for reciprocal</td></tr>
+            <tr><td><strong>S₂₂</strong></td><td>Output reflection</td><td>Like S₁₁ at port 2</td></tr>
+          </table>
+        </div>
+        <div class="callout"><span class="cl">Remember</span>Passive lossless: |S₁₁|²+|S₂₁|²=1 (power conservation). Perfectly matched: S₁₁=S₂₂=0.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Smith Chart Essentials</div>
+        <ul class="kv-list">
+          <li><span class="kv-key red">Center</span><span class="kv-val">Z₀ (normalized z=1+j0) — perfect match point</span></li>
+          <li><span class="kv-key red">Circles</span><span class="kv-val">Constant resistance circles (r=const), reactance arcs</span></li>
+          <li><span class="kv-key red">Rotation</span><span class="kv-val">Moving toward generator (source) = clockwise; toward load = CCW</span></li>
+          <li><span class="kv-key red">Full turn</span><span class="kv-val">One revolution = λ/2 along line</span></li>
+          <li><span class="kv-key red">Admittance</span><span class="kv-val">Rotate 180° on Smith chart to get Y from Z</span></li>
+        </ul>
+        <div class="callout warn"><span class="cl">Matching Technique</span>Add shunt stub or series element. Stub = short/open TL of length l to cancel reactance.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Rectangular Waveguides</div>
+        <div class="formula-box red">
+          f<sub>c,mn</sub> = (c/2)·√((m/a)²+(n/b)²)  [cutoff frequency]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key red">TE₁₀</span><span class="kv-val">Dominant mode (lowest f<sub>c</sub>); f<sub>c</sub> = c/2a for a&gt;b</span></li>
+          <li><span class="kv-key red">No TEM</span><span class="kv-val">Waveguides don't support TEM mode (no two conductors)</span></li>
+          <li><span class="kv-key red">λ<sub>g</sub></span><span class="kv-val">= λ₀/√(1−(f<sub>c</sub>/f)²) — guide wavelength</span></li>
+          <li><span class="kv-key red">v<sub>g</sub></span><span class="kv-val">= c·√(1−(f<sub>c</sub>/f)²) — group velocity &lt; c</span></li>
+          <li><span class="kv-key red">v<sub>p</sub></span><span class="kv-val">= c/√(1−(f<sub>c</sub>/f)²) — phase velocity &gt; c</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Optical Fiber</div>
+        <ul class="kv-list">
+          <li><span class="kv-key red">NA</span><span class="kv-val">= √(n₁²−n₂²) = n₁·√(2Δ) — numerical aperture</span></li>
+          <li><span class="kv-key red">θ<sub>c</sub></span><span class="kv-val">= sin⁻¹(NA) — acceptance cone half-angle</span></li>
+          <li><span class="kv-key red">TIR</span><span class="kv-val">Total internal reflection at n₁/n₂ interface (n₁>n₂)</span></li>
+          <li><span class="kv-key red">SMF</span><span class="kv-val">Single-mode: core ≈ 9µm, no modal dispersion, long-haul</span></li>
+          <li><span class="kv-key red">MMF</span><span class="kv-val">Multi-mode: core ≈ 50/62.5µm, modal dispersion, shorter reach</span></li>
+        </ul>
+        <h4>Fiber Loss</h4>
+        <div class="formula-box red">
+          α [dB/km] = (10/L)·log<sub>10</sub>(P<sub>in</sub>/P<sub>out</sub>)
+        </div>
+        <p>1310nm window: ~0.35 dB/km | 1550nm window: ~0.2 dB/km (lowest attenuation)</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-red"></span>Fiber Dispersion Types</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Type</th><th>Cause</th><th>Mitigation</th></tr>
+            <tr><td>Modal</td><td>Multiple paths in MMF</td><td>Use SMF</td></tr>
+            <tr><td>Chromatic (CD)</td><td>Material + waveguide</td><td>DSF (1310nm zero-disp)</td></tr>
+            <tr><td>Material</td><td>n varies with λ</td><td>Narrow laser linewidth</td></tr>
+            <tr><td>PMD</td><td>Polarization asymmetry</td><td>PMD compensators</td></tr>
+          </table>
+        </div>
+        <div class="formula-box red">BW × L product [GHz·km] — key fiber spec</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 5: WAVE PROPAGATION & ANTENNAS    -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s5" id="s5">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div>
+        <div class="section-title">Wave Propagation & Antenna Theory</div>
+        <div class="section-subtitle">EM Waves · Polarization · Dipoles · Arrays · Antenna Parameters</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>EM Wave Fundamentals</div>
+        <div class="formula-box pink">
+          c = f·λ = 3×10⁸ m/s  [free space]
+        </div>
+        <div class="formula-box pink">
+          v = c/√(ε<sub>r</sub>μ<sub>r</sub>)  [in medium]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">η₀</span><span class="kv-val">= 377 Ω — free space intrinsic impedance (√(μ₀/ε₀))</span></li>
+          <li><span class="kv-key pink">η</span><span class="kv-val">= η₀/√(ε<sub>r</sub>) in lossless non-magnetic medium</span></li>
+          <li><span class="kv-key pink">Poynting</span><span class="kv-val">S⃗ = E⃗ × H⃗ [W/m²] — power density vector</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Reflection, Refraction, Polarization</div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">Snell's</span><span class="kv-val">n₁·sin θ₁ = n₂·sin θ₂ (refraction)</span></li>
+          <li><span class="kv-key pink">Brewster</span><span class="kv-val">θ<sub>B</sub> = tan⁻¹(n₂/n₁) — no reflection for TM polarization</span></li>
+          <li><span class="kv-key pink">Critical</span><span class="kv-val">θ<sub>c</sub> = sin⁻¹(n₂/n₁) for n₁&gt;n₂ — total internal reflection</span></li>
+          <li><span class="kv-key pink">Linear pol</span><span class="kv-val">E in fixed plane; Circular pol: |Ex|=|Ey|, 90° phase diff</span></li>
+        </ul>
+        <div class="callout"><span class="cl">Skin Depth</span>δ = 1/√(πfμσ) — depth at which E decays to e⁻¹ = 36.8%. Higher freq = shallower depth.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Propagation Modes</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Mode</th><th>Frequency</th><th>Mechanism</th></tr>
+            <tr><td>Ground wave</td><td>&lt;2 MHz</td><td>Follows earth's surface</td></tr>
+            <tr><td>Sky wave</td><td>2–30 MHz (HF)</td><td>Ionospheric reflection</td></tr>
+            <tr><td>Space wave</td><td>&gt;30 MHz</td><td>LOS + reflected wave</td></tr>
+            <tr><td>Scatter</td><td>SHF</td><td>Troposcatter, beyond LOS</td></tr>
+          </table>
+        </div>
+        <div class="formula-box pink">
+          LOS range ≈ 4.12(√h<sub>t</sub> + √h<sub>r</sub>) km  [h in meters]
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Dipole & Monopole Antennas</div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">Hertzian</span><span class="kv-val">Infinitesimal dipole (Δl≪λ). Directivity D=1.5 (1.76 dBi)</span></li>
+          <li><span class="kv-key pink">Half-wave</span><span class="kv-val">λ/2 dipole: D=1.64 (2.15 dBi), R<sub>rad</sub>=73.1Ω</span></li>
+          <li><span class="kv-key pink">Quarter-wave</span><span class="kv-val">λ/4 monopole over ground: D=3.28 (5.15 dBi), R<sub>rad</sub>=36.5Ω</span></li>
+          <li><span class="kv-key pink">Pattern</span><span class="kv-val">Dipole: toroidal (donut), null at tips, max broadside</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Key Antenna Parameters</div>
+        <div class="formula-box pink">
+          G = D · η<sub>a</sub>  [Gain = Directivity × Efficiency]
+        </div>
+        <div class="formula-box pink">
+          A<sub>eff</sub> = G·λ²/(4π)  [effective aperture]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">HPBW</span><span class="kv-val">Half-power beam width — at −3dB points</span></li>
+          <li><span class="kv-key pink">FNBW</span><span class="kv-val">First null beam width ≈ 2×HPBW (approx)</span></li>
+          <li><span class="kv-key pink">F/B ratio</span><span class="kv-val">Forward-to-back gain ratio [dB]</span></li>
+          <li><span class="kv-key pink">dBd vs dBi</span><span class="kv-val">dBi = dBd + 2.15 (isotropic vs half-wave dipole reference)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Friis Transmission & Link Budget</div>
+        <div class="formula-box pink">
+          P<sub>r</sub>/P<sub>t</sub> = G<sub>t</sub>·G<sub>r</sub>·(λ/4πd)²  [Friis equation]
+        </div>
+        <div class="formula-box pink">
+          FSPL [dB] = 20·log(d) + 20·log(f) + 20·log(4π/c)
+                    ≈ 32.44 + 20log(f<sub>MHz</sub>) + 20log(d<sub>km</sub>)
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">Link budget</span><span class="kv-val">EIRP − path loss − system losses + G<sub>r</sub> ≥ Rx sensitivity</span></li>
+          <li><span class="kv-key pink">EIRP</span><span class="kv-val">= P<sub>t</sub>·G<sub>t</sub> [W] or P<sub>t</sub>[dBW] + G<sub>t</sub>[dBi]</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-pink"></span>Linear Antenna Arrays</div>
+        <div class="formula-box pink">
+          AF = Σ a<sub>n</sub>·e<sup>jnψ</sup>  where ψ = βd·cosθ + δ
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key pink">Broadside</span><span class="kv-val">δ=0, max at θ=90° (perpendicular to array)</span></li>
+          <li><span class="kv-key pink">End-fire</span><span class="kv-val">δ=±βd, max along array axis</span></li>
+          <li><span class="kv-key pink">N elements</span><span class="kv-val">Directivity ≈ 2N (broadside uniform array)</span></li>
+          <li><span class="kv-key pink">Grating lobes</span><span class="kv-val">Occur when d ≥ λ; avoid with d ≤ λ/2</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 6: SIGNALS & SIGNAL PROCESSING     -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s6" id="s6">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div>
+        <div class="section-title">Signals, Spectra & Signal Processing</div>
+        <div class="section-subtitle">LTI Systems · Convolution · Fourier · Laplace · Z-Transform · DFT</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>Signal Classifications</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Property</th><th>Test/Formula</th></tr>
+            <tr><td>Energy signal</td><td>E = ∫|x(t)|²dt &lt; ∞, P=0</td></tr>
+            <tr><td>Power signal</td><td>P = lim(1/T)∫|x(t)|²dt &lt; ∞, E=∞</td></tr>
+            <tr><td>Even</td><td>x(−t) = x(t)</td></tr>
+            <tr><td>Odd</td><td>x(−t) = −x(t)</td></tr>
+            <tr><td>Periodic</td><td>x(t+T₀) = x(t) for all t</td></tr>
+          </table>
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">u(t)</span><span class="kv-val">Unit step: 1 for t≥0, 0 for t&lt;0</span></li>
+          <li><span class="kv-key purple">δ(t)</span><span class="kv-val">Dirac delta: ∫δ(t)dt=1, sifting: ∫x(t)δ(t−t₀)dt=x(t₀)</span></li>
+          <li><span class="kv-key purple">rect(t/τ)</span><span class="kv-val">= 1 for |t|≤τ/2, 0 otherwise; FT → τ·sinc(fτ)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>LTI Systems & Convolution</div>
+        <div class="formula-box purple">
+          y(t) = x(t) * h(t) = ∫x(τ)·h(t−τ)dτ  [continuous]
+        </div>
+        <div class="formula-box purple">
+          y[n] = x[n] * h[n] = Σ x[k]·h[n−k]  [discrete]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">Causal</span><span class="kv-val">h(t)=0 for t&lt;0 — no response before input</span></li>
+          <li><span class="kv-key purple">Stable</span><span class="kv-val">BIBO: ∫|h(t)|dt &lt; ∞; poles inside unit circle (DT)</span></li>
+          <li><span class="kv-key purple">Y(f)</span><span class="kv-val">= X(f)·H(f) — convolution in time = multiplication in freq</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>Fourier Series (Periodic Signals)</div>
+        <div class="formula-box purple">
+          x(t) = Σ c<sub>n</sub>·e<sup>j2πnf₀t</sup>  where c<sub>n</sub> = (1/T₀)∫x(t)e<sup>−j2πnf₀t</sup>dt
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">Parseval</span><span class="kv-val">P = (1/T₀)∫|x(t)|²dt = Σ|c<sub>n</sub>|²</span></li>
+          <li><span class="kv-key purple">Square wave</span><span class="kv-val">c<sub>n</sub> = (A/nπ)sin(nπ/2); odd harmonics only</span></li>
+          <li><span class="kv-key purple">Symmetry</span><span class="kv-val">Even → cosine series; Odd → sine series</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>Fourier Transform Pairs</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>x(t)</th><th>X(f)</th></tr>
+            <tr><td>δ(t)</td><td>1</td></tr>
+            <tr><td>1</td><td>δ(f)</td></tr>
+            <tr><td>rect(t/τ)</td><td>τ·sinc(fτ)</td></tr>
+            <tr><td>sinc(2Bt)</td><td>(1/2B)·rect(f/2B)</td></tr>
+            <tr><td>e⁻ᵃᵗu(t)</td><td>1/(a+j2πf)</td></tr>
+            <tr><td>cos(2πf₀t)</td><td>(1/2)[δ(f−f₀)+δ(f+f₀)]</td></tr>
+            <tr><td>sin(2πf₀t)</td><td>(1/2j)[δ(f−f₀)−δ(f+f₀)]</td></tr>
+            <tr><td>tri(t/τ)</td><td>τ·sinc²(fτ)</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>FT Properties</div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">Linearity</span><span class="kv-val">ax(t)+by(t) ↔ aX(f)+bY(f)</span></li>
+          <li><span class="kv-key purple">Time shift</span><span class="kv-val">x(t−t₀) ↔ X(f)·e<sup>−j2πft₀</sup></span></li>
+          <li><span class="kv-key purple">Scaling</span><span class="kv-val">x(at) ↔ (1/|a|)X(f/a)</span></li>
+          <li><span class="kv-key purple">Duality</span><span class="kv-val">X(t) ↔ x(−f)</span></li>
+          <li><span class="kv-key purple">Modulation</span><span class="kv-val">x(t)·cos(2πf₀t) ↔ [X(f−f₀)+X(f+f₀)]/2</span></li>
+          <li><span class="kv-key purple">Differentiation</span><span class="kv-val">dx/dt ↔ j2πf·X(f)</span></li>
+          <li><span class="kv-key purple">Parseval's</span><span class="kv-val">∫|x(t)|²dt = ∫|X(f)|²df</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>Laplace & Z-Transform</div>
+        <div class="formula-box purple">
+          X(s) = ∫x(t)·e<sup>−st</sup>dt  [Laplace, s = σ + jω]
+        </div>
+        <div class="formula-box purple">
+          X(z) = Σ x[n]·z<sup>−n</sup>  [Z-transform]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">Stability</span><span class="kv-val">Laplace: poles in left half-plane; Z: poles inside unit circle</span></li>
+          <li><span class="kv-key purple">FT from L</span><span class="kv-val">Set s=j2πf (only if ROC includes jω axis)</span></li>
+          <li><span class="kv-key purple">DTFT from Z</span><span class="kv-val">Set z=e<sup>jΩ</sup> (unit circle)</span></li>
+        </ul>
+        <h4>Key Laplace Pairs</h4>
+        <div class="formula-box purple">
+          u(t) ↔ 1/s  |  e<sup>−at</sup>u(t) ↔ 1/(s+a)  |  δ(t) ↔ 1
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-purple"></span>DFT & DTFT</div>
+        <div class="formula-box purple">
+          X[k] = Σ<sub>n=0</sub><sup>N−1</sup> x[n]·e<sup>−j2πkn/N</sup>  [DFT, k=0..N−1]
+        </div>
+        <div class="formula-box purple">
+          x[n] = (1/N) Σ<sub>k=0</sub><sup>N−1</sup> X[k]·e<sup>j2πkn/N</sup>  [IDFT]
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key purple">FFT</span><span class="kv-val">Fast algorithm for DFT: O(N log N) vs O(N²)</span></li>
+          <li><span class="kv-key purple">Freq res</span><span class="kv-val">Δf = f<sub>s</sub>/N — frequency bin width</span></li>
+          <li><span class="kv-key purple">DTFT</span><span class="kv-val">X(e<sup>jΩ</sup>) = Σ x[n]·e<sup>−jΩn</sup> — periodic in 2π</span></li>
+          <li><span class="kv-key purple">Circular conv</span><span class="kv-val">Multiply DFTs → circular convolution (use zero-padding for linear)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 7: DATA COMMS & NETWORKS          -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s7" id="s7">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <div>
+        <div class="section-title">Data Communications & Computer Networks</div>
+        <div class="section-subtitle">OSI · TCP/IP · Routing · IP Addressing · MAC · Ethernet</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>OSI Model — 7 Layers</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>#</th><th>Layer</th><th>PDU</th><th>Key Protocols</th></tr>
+            <tr><td>7</td><td><strong>Application</strong></td><td>Data</td><td>HTTP, FTP, SMTP, DNS, SNMP</td></tr>
+            <tr><td>6</td><td><strong>Presentation</strong></td><td>Data</td><td>SSL/TLS, JPEG, ASCII</td></tr>
+            <tr><td>5</td><td><strong>Session</strong></td><td>Data</td><td>NetBIOS, RPC, SIP</td></tr>
+            <tr><td>4</td><td><strong>Transport</strong></td><td>Segment</td><td>TCP, UDP, SCTP</td></tr>
+            <tr><td>3</td><td><strong>Network</strong></td><td>Packet</td><td>IP, ICMP, OSPF, BGP</td></tr>
+            <tr><td>2</td><td><strong>Data Link</strong></td><td>Frame</td><td>Ethernet, PPP, Wi-Fi (802.11)</td></tr>
+            <tr><td>1</td><td><strong>Physical</strong></td><td>Bit</td><td>RS-232, T1, fiber, coax</td></tr>
+          </table>
+        </div>
+        <div class="callout tip"><span class="cl">Mnemonic</span>"<strong>P</strong>lease <strong>D</strong>o <strong>N</strong>ot <strong>T</strong>hrow <strong>S</strong>ausage <strong>P</strong>izza <strong>A</strong>way" (bottom→top)</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>TCP/IP Model vs OSI</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>TCP/IP Layer</th><th>OSI Equivalent</th></tr>
+            <tr><td>Application</td><td>Application + Presentation + Session (5,6,7)</td></tr>
+            <tr><td>Transport</td><td>Transport (4)</td></tr>
+            <tr><td>Internet</td><td>Network (3)</td></tr>
+            <tr><td>Network Access</td><td>Data Link + Physical (1,2)</td></tr>
+          </table>
+        </div>
+        <h4>TCP vs UDP</h4>
+        <ul class="kv-list">
+          <li><span class="kv-key teal">TCP</span><span class="kv-val">Connection-oriented, reliable, ordered, flow/congestion control (HTTP, FTP, email)</span></li>
+          <li><span class="kv-key teal">UDP</span><span class="kv-val">Connectionless, fast, no guarantees (DNS, streaming, VoIP, gaming)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>IP Addressing & Subnetting</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Class</th><th>Range (1st octet)</th><th>Default Mask</th><th>Networks</th></tr>
+            <tr><td>A</td><td>1–126</td><td>/8 (255.0.0.0)</td><td>126 nets, 16M hosts</td></tr>
+            <tr><td>B</td><td>128–191</td><td>/16 (255.255.0.0)</td><td>16K nets, 65K hosts</td></tr>
+            <tr><td>C</td><td>192–223</td><td>/24 (255.255.255.0)</td><td>2M nets, 254 hosts</td></tr>
+            <tr><td>D</td><td>224–239</td><td>—</td><td>Multicast</td></tr>
+            <tr><td>E</td><td>240–255</td><td>—</td><td>Reserved/Experimental</td></tr>
+          </table>
+        </div>
+        <div class="formula-box teal">
+          Hosts per subnet = 2<sup>h</sup> − 2  (h = host bits; minus network + broadcast)
+        </div>
+        <div class="callout tip"><span class="cl">CIDR</span>192.168.1.0/26 → 64 addresses, 62 usable hosts. /26 = 4 subnets from /24.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>Private Address Ranges (RFC 1918)</div>
+        <ul class="kv-list">
+          <li><span class="kv-key teal">Class A</span><span class="kv-val">10.0.0.0 – 10.255.255.255 (/8)</span></li>
+          <li><span class="kv-key teal">Class B</span><span class="kv-val">172.16.0.0 – 172.31.255.255 (/12)</span></li>
+          <li><span class="kv-key teal">Class C</span><span class="kv-val">192.168.0.0 – 192.168.255.255 (/16)</span></li>
+          <li><span class="kv-key teal">Loopback</span><span class="kv-val">127.0.0.0/8 (127.0.0.1 is localhost)</span></li>
+          <li><span class="kv-key teal">APIPA</span><span class="kv-val">169.254.0.0/16 — link-local auto-assigned</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>Routing Protocols</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Protocol</th><th>Type</th><th>Algorithm</th><th>Metric</th></tr>
+            <tr><td>RIP</td><td>IGP, Distance Vector</td><td>Bellman-Ford</td><td>Hop count (max 15)</td></tr>
+            <tr><td>OSPF</td><td>IGP, Link-State</td><td>Dijkstra (SPF)</td><td>Cost (BW-based)</td></tr>
+            <tr><td>EIGRP</td><td>IGP, Advanced DV</td><td>DUAL</td><td>Bandwidth + Delay</td></tr>
+            <tr><td>BGP</td><td>EGP, Path Vector</td><td>Best path</td><td>Policy-based</td></tr>
+            <tr><td>IS-IS</td><td>IGP, Link-State</td><td>Dijkstra</td><td>Cost</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>Media Access Control (MAC)</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Protocol</th><th>Method</th><th>Usage</th></tr>
+            <tr><td>CSMA/CD</td><td>Detect collision, backoff</td><td>Wired Ethernet (legacy)</td></tr>
+            <tr><td>CSMA/CA</td><td>Avoid collision, RTS/CTS</td><td>Wi-Fi 802.11</td></tr>
+            <tr><td>Token Ring</td><td>Pass token</td><td>IEEE 802.5 (legacy)</td></tr>
+            <tr><td>Slotted ALOHA</td><td>Transmit in slots</td><td>Satellite, efficiency ~37%</td></tr>
+            <tr><td>Pure ALOHA</td><td>Transmit anytime</td><td>Efficiency ~18%</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>Ethernet Standards</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Standard</th><th>Speed</th><th>Medium</th><th>Max length</th></tr>
+            <tr><td>10BASE-T</td><td>10 Mbps</td><td>Cat3 UTP</td><td>100 m</td></tr>
+            <tr><td>100BASE-TX</td><td>100 Mbps</td><td>Cat5 UTP</td><td>100 m</td></tr>
+            <tr><td>1000BASE-T</td><td>1 Gbps</td><td>Cat5e/6</td><td>100 m</td></tr>
+            <tr><td>1000BASE-LX</td><td>1 Gbps</td><td>SMF</td><td>5 km</td></tr>
+            <tr><td>10GBASE-SR</td><td>10 Gbps</td><td>MMF</td><td>300 m</td></tr>
+          </table>
+        </div>
+        <p>Ethernet frame: Preamble(8B) | DA(6B) | SA(6B) | Type(2B) | Data(46-1500B) | FCS(4B)</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-teal"></span>Switching & Framing</div>
+        <ul class="kv-list">
+          <li><span class="kv-key teal">Circuit sw</span><span class="kv-val">Dedicated path for entire call duration (PSTN). High QoS, wastes BW when idle.</span></li>
+          <li><span class="kv-key teal">Packet sw</span><span class="kv-val">Datagram routing; statistical multiplexing; internet (IP)</span></li>
+          <li><span class="kv-key teal">Virtual circ</span><span class="kv-val">Fixed path, variable packet size (ATM, Frame Relay, MPLS)</span></li>
+          <li><span class="kv-key teal">Framing</span><span class="kv-val">Bit stuffing, flag bytes (0x7E for HDLC), or length field for frame delineation</span></li>
+          <li><span class="kv-key teal">CRC</span><span class="kv-val">Cyclic Redundancy Check — polynomial division for error detection</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────── -->
+  <!-- SECTION 8: ADVANCED COMMUNICATIONS        -->
+  <!-- ─────────────────────────────────────────── -->
+  <div class="section-block s8" id="s8">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <div>
+        <div class="section-title">Advanced Communications</div>
+        <div class="section-subtitle">Microwave · Satellite · Mobile Comms · Cybersecurity</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Microwave Communications</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Band</th><th>Freq</th><th>Application</th></tr>
+            <tr><td>L-band</td><td>1–2 GHz</td><td>GPS, satellite phone</td></tr>
+            <tr><td>S-band</td><td>2–4 GHz</td><td>Weather radar, 2.4GHz Wi-Fi</td></tr>
+            <tr><td>C-band</td><td>4–8 GHz</td><td>Satellite downlink, long-haul</td></tr>
+            <tr><td>X-band</td><td>8–12 GHz</td><td>Radar, satellite military</td></tr>
+            <tr><td>Ku-band</td><td>12–18 GHz</td><td>Satellite TV (DTH)</td></tr>
+            <tr><td>Ka-band</td><td>26.5–40 GHz</td><td>High throughput satellite</td></tr>
+            <tr><td>V-band</td><td>40–75 GHz</td><td>5G mmWave, backhaul</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Satellite Communications</div>
+        <ul class="kv-list">
+          <li><span class="kv-key yellow">GEO</span><span class="kv-val">35,786 km, T=24h. Fixed in sky. 270ms delay. ~3 sats for global coverage.</span></li>
+          <li><span class="kv-key yellow">MEO</span><span class="kv-val">2,000–35,786 km. GPS (20,200km). Medium delay.</span></li>
+          <li><span class="kv-key yellow">LEO</span><span class="kv-val">160–2,000 km. Low delay (~20ms). Many sats needed. Starlink, Iridium.</span></li>
+        </ul>
+        <div class="formula-box yellow">
+          G/T = G<sub>ant</sub> [dBi] − 10log(T<sub>sys</sub>) [dB/K]  — Figure of merit
+        </div>
+        <div class="formula-box yellow">
+          EIRP = P<sub>t</sub> + G<sub>t</sub> [dBW] = saturated HPA output + antenna gain
+        </div>
+        <div class="callout warn"><span class="cl">Transponder</span>Receives uplink → translates freq → amplifies → retransmits downlink. Bent-pipe vs regenerative.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Mobile Cellular Generations</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Gen</th><th>Tech</th><th>Access</th><th>Peak Rate</th></tr>
+            <tr><td>1G</td><td>AMPS, NMT</td><td>FDMA</td><td>~2.4 kbps (analog)</td></tr>
+            <tr><td>2G</td><td>GSM, IS-95</td><td>TDMA/CDMA</td><td>9.6–14.4 kbps</td></tr>
+            <tr><td>2.5G</td><td>GPRS, EDGE</td><td>TDMA</td><td>114–384 kbps</td></tr>
+            <tr><td>3G</td><td>WCDMA, CDMA2000</td><td>CDMA</td><td>2–14.4 Mbps</td></tr>
+            <tr><td>4G LTE</td><td>LTE, WiMAX</td><td>OFDMA/SC-FDMA</td><td>100–1000 Mbps</td></tr>
+            <tr><td>5G</td><td>NR</td><td>OFDMA + mmWave</td><td>1–20 Gbps</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>OFDM — Key Concepts</div>
+        <div class="formula-box yellow">
+          Subcarrier spacing Δf = 1/T<sub>s</sub>; subcarriers orthogonal
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key yellow">Cyclic prefix</span><span class="kv-val">Copies end of symbol to beginning — eliminates ISI in multipath</span></li>
+          <li><span class="kv-key yellow">CP length</span><span class="kv-val">Must be ≥ max channel delay spread</span></li>
+          <li><span class="kv-key yellow">PAPR</span><span class="kv-val">High Peak-to-Average Power Ratio — main disadvantage of OFDM</span></li>
+          <li><span class="kv-key yellow">DFT/IDFT</span><span class="kv-val">Modulation via IFFT, demodulation via FFT</span></li>
+          <li><span class="kv-key yellow">4G vs 5G</span><span class="kv-val">LTE: Δf=15kHz. 5G NR: scalable numerology (15kHz to 240kHz)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Cellular Concepts</div>
+        <ul class="kv-list">
+          <li><span class="kv-key yellow">Handoff</span><span class="kv-val">Hard: break-before-make. Soft (CDMA): make-before-break.</span></li>
+          <li><span class="kv-key yellow">Frequency reuse</span><span class="kv-val">D/R = √(3N); N = cluster size; typical N=7 (2G)</span></li>
+          <li><span class="kv-key yellow">Cell splitting</span><span class="kv-val">Divide cells to increase capacity; smaller radius = more users</span></li>
+          <li><span class="kv-key yellow">Sectorization</span><span class="kv-val">120° sectors × 3 = 3-sector cell; reduces co-channel interference</span></li>
+          <li><span class="kv-key yellow">Fading</span><span class="kv-val">Large-scale (path loss/shadowing) vs small-scale (multipath/Doppler)</span></li>
+          <li><span class="kv-key yellow">Rayleigh fading</span><span class="kv-val">No LOS component; Rician: with LOS component (K-factor)</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Cybersecurity Fundamentals</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Concept</th><th>Description</th></tr>
+            <tr><td>CIA Triad</td><td>Confidentiality, Integrity, Availability</td></tr>
+            <tr><td>Symmetric</td><td>Same key encrypt/decrypt — AES, DES, 3DES</td></tr>
+            <tr><td>Asymmetric</td><td>Public/private key pair — RSA, ECC, Diffie-Hellman</td></tr>
+            <tr><td>Hashing</td><td>One-way, fixed output — SHA-256, MD5 (weak)</td></tr>
+            <tr><td>TLS/SSL</td><td>Handshake: asymmetric for key exchange, symmetric for data</td></tr>
+            <tr><td>VPN</td><td>IPSec (L3), SSL/TLS VPN (L4), tunnel over public network</td></tr>
+          </table>
+        </div>
+        <div class="callout warn"><span class="cl">⚠ Common Attacks</span>MitM, DDoS, phishing, SQL injection, replay, eavesdropping, brute force</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Radar & Microwave Devices</div>
+        <div class="formula-box yellow">
+          Radar range: R = (P<sub>t</sub>·G²·λ²·σ / ((4π)³·P<sub>min</sub>))^(1/4)
+        </div>
+        <ul class="kv-list">
+          <li><span class="kv-key yellow">PRF</span><span class="kv-val">Pulse repetition freq; max range = c/(2·PRF)</span></li>
+          <li><span class="kv-key yellow">Doppler</span><span class="kv-val">f<sub>d</sub> = 2v·f₀/c (for velocity v, carrier f₀)</span></li>
+          <li><span class="kv-key yellow">Klystron</span><span class="kv-val">High-power amplifier; velocity modulation</span></li>
+          <li><span class="kv-key yellow">Magnetron</span><span class="kv-val">Oscillator; used in radar/microwave ovens</span></tr>
+          <li><span class="kv-key yellow">Gunn diode</span><span class="kv-val">Microwave oscillator; negative resistance; GaAs</span></li>
+          <li><span class="kv-key yellow">PIN diode</span><span class="kv-val">RF switch/attenuator; p-intrinsic-n structure</span></li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot d-yellow"></span>Key Constants & Quick Reference</div>
+        <div class="table-wrap">
+          <table>
+            <tr><th>Constant/Value</th><th>Value</th></tr>
+            <tr><td>Speed of light, c</td><td>3×10⁸ m/s</td></tr>
+            <tr><td>Boltzmann constant, k</td><td>1.38×10⁻²³ J/K</td></tr>
+            <tr><td>Thermal noise (290K, 1Hz)</td><td>−174 dBm/Hz</td></tr>
+            <tr><td>Free-space η</td><td>377 Ω</td></tr>
+            <tr><td>1 neper</td><td>8.686 dB</td></tr>
+            <tr><td>AM IF frequency</td><td>455 kHz</td></tr>
+            <tr><td>FM IF frequency</td><td>10.7 MHz</td></tr>
+            <tr><td>PCM voice (DS0)</td><td>64 kbps (8-bit × 8kHz)</td></tr>
+            <tr><td>T1 line rate</td><td>1.544 Mbps</td></tr>
+            <tr><td>E1 line rate</td><td>2.048 Mbps</td></tr>
+            <tr><td>GEO altitude</td><td>35,786 km</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END CONTENT -->
+  </div><!-- #search-content -->
+</main>
+
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
-// ─── MASTER QUESTION BANK ───────────────────────────────────────────────────
-const masterQuestions = [
-  {
-    q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of implementing the new process or solution that was selected?",
-    opts: ["Security Architect","SOC Manager","Security Engineer","Security Analyst"],
-    ans: 2,
-    exp: "The Security Engineer is responsible for implementing and deploying the selected solutions. The Security Architect designs and selects the tools, while analysts investigate and the SOC Manager oversees operations."
-  },
-  {
-    q: "Which of the following is a correct Splunk search that will return results in the most performant way?",
-    opts: [
-      "index=foo host=i-478619733 | stats range(_time) as duration by src_ip | bin duration span=5min | stats count by duration, host",
-      "| stats range(_time) as duration by src_ip | index=foo host=i-478619733 | bin duration span=5min | stats count by duration, host",
-      "index=foo host=i-478619733 | transaction src_ip |stats count by host",
-      "index=foo | transaction src_ip |stats count by host | search host=i-478619733"
-    ],
-    ans: 0,
-    exp: "The most performant Splunk searches filter data as early as possible using index and host constraints before any pipe commands. Option A correctly places index=foo host=i-478619733 at the start, reducing the data set before transformations. Options B and D filter late or after pipes, which is inefficient."
-  },
-  {
-    q: "There are many resources for assisting with SPL and configuration questions. Which of the following resources feature community-sourced answers?",
-    opts: ["Splunk Answers","Splunk Lantern","Splunk Guidebook","Splunk Documentation"],
-    ans: 0,
-    exp: "Splunk Answers (answers.splunk.com) is Splunk's official community Q&A platform where users post questions and the community provides answers. Splunk Lantern and official Documentation are Splunk-authored resources."
-  },
-  {
-    q: "A successful Continuous Monitoring initiative involves the entire organization. When an analyst discovers the need for more context or additional information, perhaps from additional data sources or altered correlation rules, to what role would this request generally escalate?",
-    opts: ["SOC Manager","Security Analyst","Security Engineer","Security Architect"],
-    ans: 2,
-    exp: "Security Engineers handle the technical implementation requests such as onboarding new data sources or modifying correlation rules. Analysts identify needs, but engineers perform the technical work of adding data and building detections."
-  },
-  {
-    q: "Splunk Enterprise Security has numerous frameworks to create correlations, integrate threat intelligence, and provide a workflow for investigations. Which framework raises the threat profile of individuals or assets to allow identification of people or devices that perform an unusual amount of suspicious activities?",
-    opts: ["Threat Intelligence Framework","Risk Framework","Notable Event Framework","Asset and Identity Framework"],
-    ans: 1,
-    exp: "The Risk Framework in Splunk ES assigns risk scores to entities (users, hosts) based on suspicious activity. When an entity accumulates enough risk, a Risk Notable is generated, helping analysts identify high-risk individuals or devices."
-  },
-  {
-    q: "While the top command is utilized to find the most common values contained within a field, a Cyber Defense Analyst hunts for anomalies. Which of the following Splunk commands returns the least common values?",
-    opts: ["least","uncommon","rare","base"],
-    ans: 2,
-    exp: "The `rare` command is the direct counterpart to `top` in Splunk SPL. It returns the least common values in a field, making it useful for anomaly and threat hunting where unusual or infrequent activity is of interest."
-  },
-  {
-    q: "The Lockheed Martin Cyber Kill Chain® breaks an attack lifecycle into several stages. A threat actor modified the registry on a compromised Windows system to ensure that their malware would automatically run at boot time. Into which phase of the Kill Chain would this fall?",
-    opts: ["Act on Objectives","Exploitation","Delivery","Installation"],
-    ans: 3,
-    exp: "The Installation phase of the Kill Chain covers actions taken by attackers to establish persistence on the target, such as modifying the registry to ensure malware runs at startup. Exploitation is the act of triggering a vulnerability, while Act on Objectives is the final goal phase."
-  },
-  {
-    q: "A Risk Notable Event has been triggered in Splunk Enterprise Security, an analyst investigates the alert, and determines it is a false positive. What metric would be used to define the time between alert creation and close of the event?",
-    opts: ["MTTR (Mean Time to Respond)","MTBF (Mean Time Between Failures)","MTTA (Mean Time to Acknowledge)","MTTD (Mean Time to Detect)"],
-    ans: 0,
-    exp: "MTTR (Mean Time to Respond) measures the average time from when an alert is created to when it is resolved or closed. MTTA measures time to first acknowledgment, while MTTD measures time to detect the issue initially."
-  },
-  {
-    q: "An analyst needs to create a new field at search time. Which Splunk command will dynamically extract additional fields as part of a Search pipeline?",
-    opts: ["rex","fields","regex","eval"],
-    ans: 0,
-    exp: "The `rex` command uses regular expressions to extract new fields from existing field values at search time. The `fields` command selects or removes existing fields, and `eval` computes new field values from expressions rather than raw text extraction."
-  },
-  {
-    q: "Which of the following is considered Personal Data under GDPR?",
-    opts: [
-      "The birth date of an unidentified user.",
-      "An individual's address including their first and last name.",
-      "The name of a deceased individual.",
-      "A company's registration number."
-    ],
-    ans: 1,
-    exp: "Under GDPR, personal data is any information that can identify a living natural person. An individual's address combined with their name directly identifies a living person. A birth date alone without identification, a deceased person's name, or a company number do not qualify."
-  },
-  {
-    q: "What goal of an Advanced Persistent Threat (APT) group aims to disrupt or damage on behalf of a cause?",
-    opts: ["Hacktivism","Cyber espionage","Financial gain","Prestige"],
-    ans: 0,
-    exp: "Hacktivism is the use of hacking techniques to promote a political or social cause, often involving disruption or defacement of systems. Cyber espionage aims at stealing information, while financial gain and prestige are other common APT motivations."
-  },
-  {
-    q: "A Cyber Threat Intelligence (CTI) team produces a report detailing a specific threat actor's typical behaviors and intent. This would be an example of what type of intelligence?",
-    opts: ["Operational","Executive","Tactical","Strategic"],
-    ans: 3,
-    exp: "Strategic intelligence provides high-level insight into a threat actor's motivations, capabilities, and intent, helping leadership understand the threat landscape. Tactical intelligence focuses on TTPs, Operational focuses on specific campaigns, and Executive is often a simplified summary for leadership."
-  },
-  {
-    q: "An analyst is building a search to examine Windows XML Event Logs, but the initial search is not returning any extracted fields. Based on the above image, what is the most likely cause?",
-    opts: [
-      "The analyst does not have the proper role to search this data.",
-      "The analyst is searching newly indexed data that was improperly parsed.",
-      "The analyst did not add the excract command to their search pipeline.",
-      "The analyst is not in the Drooer Search Mode and should switch to Smart or Verbose."
-    ],
-    ans: 2,
-    exp: "When searching XML-based Windows event logs, fields are not automatically extracted unless the `extract` command (or spath for XML) is added to the search pipeline. Without it, Splunk will show the raw event but no parsed fields."
-  },
-  {
-    q: "An organization is using Risk-Based Alerting (RBA). During the past few days, a user account generated multiple risk observations. Splunk refers to this account as what type of entity?",
-    opts: ["Risk Factor","Risk Index","Risk Analysis","Risk Object"],
-    ans: 3,
-    exp: "Risk object is the answer according to splunk since it is the term for the thing that is monitored or the one where it's risk is scored."
-  },
-  {
-    q: "When searching in Splunk, which of the following SPL commands can be used to run a subsearch across every field in a wildcard field list?",
-    opts: ["foreach","rex","makeresults","transaction"],
-    ans: 0,
-    exp: "The `foreach` command iterates over fields in a wildcard list and runs a template command for each matching field, making it ideal for running operations across multiple dynamically named fields. `rex` extracts, `makeresults` generates, and `transaction` groups events."
-  },
-  {
-    q: "How are Notable Events configured in Splunk Enterprise Security?",
-    opts: [
-      "During an investigation.",
-      "As part of an audit.",
-      "Via an Adaptive Response Action in a regular search.",
-      "Via an Adaptive Response Action in a correlation search."
-    ],
-    ans: 3,
-    exp: "Notable Events in Splunk ES are created through Adaptive Response Actions that are configured within Correlation Searches. When a correlation search fires, its associated Adaptive Response Action writes the Notable Event to the notable index."
-  },
-  {
-    q: "An analyst is investigating a network alert for suspected lateral movement from one Windows host to another Windows host. According to Splunk CIM documentation, the IP address of the host from which the attacker is moving would be in which field?",
-    opts: ["host","dest","src_nt_host","src_ip"],
-    ans: 3,
-    exp: "In the Splunk CIM Network Traffic data model, `src_ip` holds the source IP address — the system initiating the connection, which in a lateral movement scenario is the host the attacker is moving from. `dest` is the destination, and `host` refers to the log source."
-  },
-  {
-    q: "Which of the following data sources can be used to discover unusual communication within an organization's network?",
-    opts: ["EDS","Net Flow","Email","IAM"],
-    ans: 1,
-    exp: "Net Flow (NetFlow) data captures metadata about network connections — source/destination IPs, ports, bytes transferred — without capturing content. This makes it ideal for detecting unusual communication patterns such as beaconing, lateral movement, or data exfiltration."
-  },
-  {
-    q: "When threat hunting for outliers in Splunk, which of the following SPL pipelines would filter for users with over a thousand occurrences?",
-    opts: [
-      "| sort by user | where count > 1000",
-      "| stats count by user | where count > 1000 | sort - count",
-      "| top user",
-      "| stats count(user) | sort - count | where count > 1000"
-    ],
-    ans: 1,
-    exp: "Option B correctly uses `stats count by user` to aggregate counts per user, then `where count > 1000` to filter, and `sort - count` to order descending. Option A lacks the stats aggregation needed before `where count`, and Option D uses an incorrect stats syntax."
-  },
-  {
-    q: "The United States Department of Defense (DoD) requires all government contractors to provide adequate security safeguards referenced in National Institute of Standards and Technology (NIST) 800-171. All DoD contractors must continually reassess, monitor, and track compliance to be able to do business with the US government.\n\nWhich feature of Splunk Enterprise Security provides an analyst context for the correlation search mapping to the specific NIST guidelines?",
-    opts: ["Comments","Moles","Annotations","Framework mapping"],
-    ans: 3,
-    exp: "Framework mapping in Splunk ES allows correlation searches to be mapped to industry standards and compliance frameworks such as NIST 800-171, CIS Controls, and MITRE ATT&CK. This gives analysts immediate regulatory context for each alert."
-  },
-  {
-    q: "An analyst is investigating the number of failed login attempts by IP address. Which SPL command can be used to create a temporary table containing the number of failed login attempts by IP address over a specific time period?",
-    opts: [
-      "index=security_logs eventtype=failed_login | eval count as failed_attempts by src_ip | sort -failed_attempts",
-      "index=security_logs eventtype=failed_login | transaction count as failed_attempts by src_ip | sort -failed_attempts",
-      "index=security_logs eventtype=failed_login | stats count as failed_attempts by src_ip | sort -failed_attempts",
-      "index=security_logs eventtype=failed_login | sum count as failed_attempts by src_ip | sort -failed_attempts"
-    ],
-    ans: 2,
-    exp: "The `stats count as failed_attempts by src_ip` command correctly aggregates events, counts them, renames the count field, and groups by source IP. `eval` and `transaction` cannot aggregate in this way, and `sum` is not a standalone SPL command."
-  },
-  {
-    q: "The field file_acl contains access controls associated with files affected by an event. In which data model would an analyst find this field?",
-    opts: ["Malware","Alerts","Vulnerabilities","Endpoint"],
-    ans: 3,
-    exp: "The `file_acl` field belongs to the Endpoint data model, specifically the Filesystem dataset, which tracks file-level events including access controls, file modifications, and process interactions on endpoints."
-  },
-  {
-    q: "A threat hunter generates a report containing the list of users who have logged in to a particular database during the last 6 months, along with the number of times they have each authenticated. They sort this list and remove any user names who have logged in more than 6 times. The remaining names represent the users who rarely log in, as their activity is more suspicious. The hunter examines each of these rare logins in detail.\n\nThis is an example of what type of threat-hunting technique?",
-    opts: [
-      "Least Frequency of Occurrence Analysis",
-      "Co-Occurrence Analysis",
-      "Time Series Analysis",
-      "Outlier Frequency Analysis"
-    ],
-    ans: 0,
-    exp: "Least Frequency of Occurrence (LFO) Analysis focuses on identifying rare events that are statistically uncommon. By removing frequent users and focusing on those with minimal login activity, the hunter is specifically looking for low-frequency events that could indicate malicious access."
-  },
-  {
-    q: "What is the main difference between hypothesis-driven and data-driven Threat Hunting?",
-    opts: [
-      "Data-driven hunts always require more data to search through than hypothesis-driven hunts.",
-      "Data-driven hunting tries to uncover activity within an existing data set, hypothesis-driven hunting begins with a potential activity that the hunter thinks may be happening.",
-      "Hypothesis-driven hunts are typically executed on newly ingested data sources, while data-driven hunts are not.",
-      "Hypothesis-driven hunting tries to uncover activity within an existing data set, data-driven hunting begins with an activity that the hunter thinks may be happening."
-    ],
-    ans: 1,
-    exp: "Data-driven hunting analyzes existing data for patterns or anomalies without a predetermined idea. Hypothesis-driven hunting starts with a specific assumption (e.g., 'an attacker may be using Cobalt Strike') and searches for evidence to confirm or refute it."
-  },
-  {
-    q: "The Security Operations Center (SOC) manager is interested in creating a new dashboard for typosquatting after a successful campaign against a group of senior executives. Which existing ES dashboard could be used as a starting point to create a custom dashboard?",
-    opts: ["IAM Activity","Malware Center","Access Anomalies","New Domain Analysis"],
-    ans: 3,
-    exp: "The New Domain Analysis dashboard in Splunk ES helps identify recently registered or newly seen domains, which is foundational for detecting typosquatting — where attackers register domains that closely resemble legitimate ones to deceive users."
-  },
-  {
-    q: "What is the main difference between a DDoS and a DoS attack?",
-    opts: [
-      "A DDoS attack is a type of physical attack, while a DoS attack is a type of cyberattack.",
-      "A DDoS attack uses a single source to target a single system, while a DoS attack uses multiple sources to target multiple systems.",
-      "A DDoS attack uses multiple sources to target a single system, while a DoS attack uses a single source to target a single or multiple systems.",
-      "A DDoS attack uses a single source to target multiple systems, while a DoS attack uses multiple sources to target a single system."
-    ],
-    ans: 2,
-    exp: "A Distributed Denial of Service (DDoS) attack leverages many compromised systems (a botnet) to simultaneously overwhelm a single target. A standard DoS attack originates from a single source. This distinction is critical for understanding attack scale and mitigation strategies."
-  },
-  {
-    q: "A Cyber Threat Intelligence (CTI) team delivers a briefing to the CISO detailing their view of the threat landscape the organization faces. This is an example of what type of Threat Intelligence?",
-    opts: ["Tactical","Strategic","Operational","Executive"],
-    ans: 1,
-    exp: "Strategic intelligence is high-level, long-term intelligence about the overall threat landscape, adversary intent, and geopolitical risk. It is consumed by senior leadership (like a CISO) to guide strategy and investment decisions, rather than immediate operational response."
-  },
-  {
-    q: "An analyst is examining the logs for a web application's login form. They see thousands of failed logon attempts using various usernames and passwords. Internet research indicates that these credentials may have been compiled by combining account information from several recent data breaches.\n\nWhich type of attack would this be an example of?",
-    opts: ["Credential sniffing","Password cracking","Password spraying","Credential stuffing"],
-    ans: 3,
-    exp: "Credential stuffing uses large sets of previously breached username/password combinations to attempt logins against other services, exploiting password reuse. Password spraying tries one password against many accounts, and cracking involves computationally deriving passwords from hashes."
-  },
-  {
-    q: "An analysis of an organization's security posture determined that a particular asset is at risk and a new process or solution should be implemented to protect it. Typically, who would be in charge of designing the new process and selecting the required tools to implement it?",
-    opts: ["SOC Manager","Security Engineer","Security Architect","Security Analyst"],
-    ans: 2,
-    exp: "The Security Architect is responsible for designing security solutions, selecting appropriate tools, and defining the architecture. Once the architecture is defined, the Security Engineer implements it. This is the companion question to Q1 — architects design, engineers implement."
-  },
-  {
-    q: "After discovering some events that were missed in an initial investigation, an analyst determines this is because some events have an empty src field. Instead, the required data is often captured in another field called machine_name.\n\nWhat SPL could they use to find all relevant events across either field until the field extraction is fixed?",
-    opts: [
-      "| eval src = coalesce(src,machine_name)",
-      "| eval src = src + machine_name",
-      "| eval src = src . machine_name",
-      "| eval src = tostring(machine_name)"
-    ],
-    ans: 0,
-    exp: "The `coalesce()` function returns the first non-null value from a list of fields. `coalesce(src, machine_name)` means: use `src` if it exists; otherwise fall back to `machine_name`. This elegantly handles missing field values without losing events."
-  },
-  {
-    q: "An analyst would like to test how certain Splunk SPL commands work against a small set of data. What command should start the search pipeline if they wanted to create their own data instead of utilizing data contained within Splunk?",
-    opts: ["makeresults","rename","eval","stats"],
-    ans: 0,
-    exp: "`makeresults` generates a specified number of synthetic result rows without querying any index. It is the standard starting point when an analyst wants to experiment with SPL commands using custom or mock data rather than real indexed events."
-  },
-  {
-    q: "What is the following step-by-step description an example of?\n\n1. The attacker devises a non-default beacon profile with Cobalt Strike and embeds this within a document.\n2. The attacker creates a unique email with the malicious document based on extensive research about their target.\n3. When the victim opens this document, a C2 channel is established to the attacker's temporary infrastructure on a compromised website.",
-    opts: ["Tactic","Policy","Procedure","Technique"],
-    ans: 2,
-    exp: "This detailed, step-by-step implementation using specific tools (Cobalt Strike) and methods describes a Procedure. A Tactic is a broader goal category, and a Procedure would be an even more granular real-world implementation."
-  },
-  {
-    q: "Which of the following is a best practice when creating performant searches within Splunk?",
-    opts: [
-      "Utilize the transaction command to aggregate data for faster analysis.",
-      "Utilize Aggregating commands to ensure all data is available prior to Streaming commands.",
-      "Utilize specific fields to return only the data that is required.",
-      "Utilize multiple wildcards across fields to ensure returned data is complete and available."
-    ],
-    ans: 2,
-    exp: "Specifying only the fields you need (using `fields` command) reduces the amount of data Splunk processes and passes through the pipeline, significantly improving performance. Wildcards and `transaction` commands are known to degrade performance."
-  },
-  {
-    q: "Which pre-packaged app delivers security content and detections on a regular, ongoing basis for Enterprise Security and SOAR?",
-    opts: ["SSE","ESCU","Threat Hunting","InfoSec"],
-    ans: 1,
-    exp: "ESCU (Enterprise Security Content Update) is Splunk's regularly updated package of detection searches, correlation rules, and threat content for Enterprise Security and SOAR. It is maintained and updated by Splunk's threat research team (STRT)."
-  },
-  {
-    q: "Which search command allows an analyst to match whatever is inside the parentheses as a single term in the index, even if it contains characters that are usually recognized as minor breakers such as periods or underscores?",
-    opts: ["CASE()","LIKE()","FORMAT ()","TERM ()"],
-    ans: 3,
-    exp: "The `TERM()` directive forces Splunk to treat the enclosed string as a single search term, bypassing minor breakers like periods, underscores, and hyphens. This is especially useful when searching for IP addresses, file hashes, or version strings as exact terms."
-  },
-  {
-    q: "Which field is automatically added to search results when assets are properly defined and enabled in Splunk Enterprise Security?",
-    opts: ["asset_category","src_ip","src_category","user"],
-    ans: 2,
-    exp: "When the Asset and Identity framework is properly configured in Splunk ES, it automatically enriches events with `src_category` (and `dest_category`) by correlating the IP or hostname in the event with the asset lookup table, providing context about the asset's role or classification."
-  },
-  {
-    q: "An IDS signature is designed to detect and alert on logins to a certain server, but only if they occur from 6:00 PM - 6:00 AM. If no IDS alerts occur in this window, but the signature is known to be correct, this would be an example of what?",
-    opts: ["A True Negative.","A True Positive.","A False Negative.","A False Positive."],
-    ans: 0,
-    exp: "A True Negative occurs when the detection system correctly does not alert because no malicious activity actually took place. If no logins occurred during the monitored window and no alert fired, the system correctly identified the absence of a threat — that is a True Negative."
-  },
-  {
-    q: "Which of the following is not a component of the Splunk Security Content library (ESCU, SSE)?",
-    opts: ["Dashboards","Reports","Correlation searches","Validated architectures"],
-    ans: 3,
-    exp: "The Splunk Security Content library (ESCU/SSE) includes dashboards, reports, correlation searches, saved searches, macros, and lookup files. Validated architectures are hardware/deployment sizing guides published separately and are not part of the security content library."
-  },
-  {
-    q: "The eval SPL expression supports many types of functions. Which of these function categories is not valid with eval?",
-    opts: ["JSON functions","Text functions","Comparison and Conditional functions","Threat functions"],
-    ans: 3,
-    exp: "Splunk's `eval` command supports a wide range of function categories including mathematical, text/string, comparison, conditional, date/time, JSON, and cryptographic functions. 'Threat functions' is not a recognized eval function category in Splunk SPL."
-  },
-  {
-    q: "Which of the following is a tactic used by attackers, rather than a technique?",
-    opts: [
-      "Gathering information about a target.",
-      "Establishing persistence with a scheduled task.",
-      "Using a phishing email to gain initial access.",
-      "Escalating privileges via UAC bypass."
-    ],
-    ans: 0,
-    exp: "In MITRE ATT&CK, a Tactic is a high-level adversary goal or category (e.g., Reconnaissance, Persistence, Privilege Escalation). 'Gathering information about a target' is the Reconnaissance tactic. The other options describe specific Techniques (how the goal is achieved)."
-  },
-  {
-    q: "Which stage of continuous monitoring involves adding data, creating detections, and building drilldowns?",
-    opts: ["Implement and Collect","Establish and Architect","Respond and Review","Analyze and Report"],
-    ans: 0,
-    exp: "The 'Implement and Collect' stage is where the actual technical work happens: onboarding data sources, writing correlation searches, and building drilldown dashboards. 'Establish and Architect' is the planning phase, while 'Analyze and Report' focuses on reviewing findings."
-  },
-  {
-    q: "An analyst is investigating how an attacker successfully performs a brute-force attack to gain a foothold into an organizations systems. In the course of the investigation the analyst determines that the reason no alerts were generated is because the detection searches were configured to run against Windows data only and excluding any Linux data.\n\nThis is an example of what?",
-    opts: ["A True Positive.","A True Negative.","A False Negative.","A False Positive."],
-    ans: 2,
-    exp: "A False Negative occurs when malicious activity actually happened, but the detection system failed to alert on it. Here, the brute-force attack was real (True condition), but the alert did not fire (Negative result) because Linux logs were excluded — a detection gap."
-  },
-  {
-    q: "An analyst investigates an IDS alert and confirms suspicious traffic to a known malicious IP. What Enterprise Security data model would they use to investigate which process initiated the network connection?",
-    opts: ["Endpoint","Authentication","Network traffic","Web"],
-    ans: 0,
-    exp: "Process-level information (which process initiated a network connection) is captured in the Endpoint data model, specifically the Processes dataset. Network traffic shows the connection itself but not the initiating process — that requires endpoint telemetry like Sysmon or EDR data."
-  },
-  {
-    q: "Which of the following is a best practice for searching in Splunk?",
-    opts: [
-      "Streaming commands run before aggregating commands in the Search pipeline.",
-      "Raw word searches should contain multiple wildcards to ensure all edge cases are covered.",
-      "Limit fields returned from the search utilizing the cable command.",
-      "Searching over All Time ensures that all relevant data is returned."
-    ],
-    ans: 2,
-    exp: "Limiting fields using the `table` command (noted here as 'cable' due to a typo in the source) reduces the data volume passed through the pipeline and improves performance. Wildcards and All Time searches are known performance anti-patterns in Splunk."
-  },
-  {
-    q: "While testing the dynamic removal of credit card numbers, an analyst lands on using the rex command. What mode needs to be set to in order to replace the defined values with X?\n\n| makeresults\n| eval ccnumber=\"511388720478619733\"\n| rex field=ccnumber mode=??? \"s/(\\d{4}-){3)/XXXX-XXXX-XXXX-/g\"\n\nPlease assume that the above rex command is correctly written.",
-    opts: ["sed","replace","mask","substitute"],
-    ans: 0,
-    exp: "Setting `mode=sed` in the `rex` command enables sed-style substitution syntax, allowing you to use expressions like `s/pattern/replacement/flags` to find and replace values in a field. This is the only mode in which the `rex` command performs replacements rather than just extraction."
-  },
-  {
-    q: "Which of the following use cases is best suited to be a Splunk SOAR Playbook?",
-    opts: [
-      "Forming hypothesis for Threat Hunting",
-      "Visualizing complex datasets.",
-      "Creating persistent field extractions.",
-      "Taking containment action on a compromised host"
-    ],
-    ans: 3,
-    exp: "Splunk SOAR Playbooks are designed to automate incident response workflows, including taking rapid containment actions (e.g., isolating a host, blocking an IP). Manual hypothesis formation, visualization, and field extractions are analyst tasks better suited to other Splunk tools."
-  },
-  {
-    q: "Which of the following is not considered an Indicator of Compromise (IOC)?",
-    opts: [
-      "A specific domain that is utilized for phishing.",
-      "A specific IP address used in a cyberattack.",
-      "A specific file hash of a malicious executable.",
-      "A specific password for a compromised account."
-    ],
-    ans: 3,
-    exp: "IOCs are artifacts that indicate a system has been compromised: malicious domains, IPs, file hashes, registry keys, etc. A password — even a compromised one — is a credential, not an indicator that a compromise occurred. It's what an attacker uses, not evidence left behind."
-  },
-  {
-    q: "According to Splunk CIM documentation, which field in the Authentication Data Model represents the user who initiated a privilege escalation?",
-    opts: ["username","src_user_id","src_user","dest_user"],
-    ans: 2,
-    exp: "In the Splunk CIM Authentication data model, `src_user` represents the user initiating an action — in a privilege escalation scenario, this is the user who initiated the escalation attempt. `dest_user` would be the target account being escalated to."
-  },
-  {
-    q: "The following list contains examples of Tactics, Techniques, and Procedures (TTPs):\n1. Exploiting a remote service\n2. Lateral movement\n3. Use EternalBlue to exploit a remote SMB server\nIn which order are they listed below?",
-    opts: [
-      "Tactic, Technique, Procedure",
-      "Procedure, Technique, Tactic",
-      "Technique, Tactic, Procedure",
-      "Tactic, Procedure, Technique"
-    ],
-    ans: 2,
-    exp: "Item 1 ('Exploiting a remote service') is a Technique — a specific method. Item 2 ('Lateral movement') is a Tactic — a high-level goal. Item 3 ('Use EternalBlue to exploit a remote SMB server') is a Procedure — a specific, named real-world implementation. Order: Technique, Tactic, Procedure = Answer A."
-  },
-  {
-    q: "An analyst is attempting to investigate a Notable Event within Enterprise Security. Through the course of their investigation they determined that the logs and artifacts needed to investigate the alert are not available.\n\nWhat event disposition should the analyst assign to the Notable Event?",
-    opts: [
-      "Benign Positive, since there was no evidence that the event actually occurred.",
-      "False Negative, since there are no logs to prove the activity actually occurred.",
-      "True Positive, since there are no logs to prove that the event did not occur.",
-      "Other, since a security engineer needs to ingest the required logs."
-    ],
-    ans: 3,
-    exp: "When an investigation cannot be concluded due to missing data, the correct disposition is 'Other,' indicating that the investigation is inconclusive and requires additional resources (such as a security engineer ingesting the missing logs) before a determination can be made."
-  },
-  {
-    q: "An analyst is looking at Web Server logs, and sees the following entry as the last web request that a server processed before unexpectedly shutting down:\n\n147.186.119.107 - - [28/Jul/2006:10:27:10 -0300] \"POST /cgi-bin/shutdown/ HTTP/1.0\" 200 3333\n\nWhat kind of attack is most likely occurring?",
-    opts: [
-      "Distributed denial of service attack.",
-      "Denial of service attack.",
-      "Database injection attack.",
-      "Cross-Site scripting attack."
-    ],
-    ans: 1,
-    exp: "A single IP (147.186.119.107) sending a POST request to a /cgi-bin/shutdown/ endpoint that caused the server to go offline is characteristic of a Denial of Service (DoS) attack — specifically, exploiting an exposed administrative endpoint. A DDoS would involve many sources."
-  },
-  {
-    q: "Which of the Enterprise Security frameworks provides additional automatic context and correlation to fields that exist within raw data?",
-    opts: ["Asset and Identity","Threat Intelligence","Adaptive Response","Risk"],
-    ans: 0,
-    exp: "The Asset and Identity framework automatically enriches events by correlating IP addresses, hostnames, and usernames in raw log data against the asset and identity lookup tables, adding fields like src_category, dest_category, and user identity context."
-  },
-  {
-    q: "Which Enterprise Security framework provides a mechanism for running preconfigured actions within the Splunk platform or integrating with external applications?",
-    opts: ["Asset and Identity","Notable Event","Threat Intelligence","Adaptive Response"],
-    ans: 3,
-    exp: "The Adaptive Response framework in Splunk ES allows analysts and correlation searches to trigger preconfigured actions — such as running scripts, sending alerts, or integrating with external systems like ticketing tools or SOAR platforms — in response to detected events."
-  },
-  {
-    q: "Which of the following Splunk Enterprise Security features allows industry frameworks such as CIS Critical Security Controls, MITRE ATT&CK, and the Lockheed Martin Cyber Kill Chain® to be mapped to Correlation Search results?",
-    opts: ["Annotations","Playbooks","Comments","Enrichments"],
-    ans: 0,
-    exp: "Annotations in Splunk ES allow correlation searches to be tagged with mappings to industry frameworks like MITRE ATT&CK, CIS Controls, and the Cyber Kill Chain. This gives analysts immediate regulatory and threat-intelligence context when investigating a Notable Event."
-  },
-  {
-    q: "Which of the following is the primary benefit of using the CIM in Splunk?",
-    opts: [
-      "It allows for easier correlation of data from different sources.",
-      "It improves the performance of search queries on raw data.",
-      "It enables the use of advanced machine learning algorithms.",
-      "It automatically detects and blocks cyber threats."
-    ],
-    ans: 0,
-    exp: "The Common Information Model (CIM) normalizes data from disparate sources into a common schema. This means data from firewalls, Windows logs, and cloud services can all be searched and correlated using the same field names, dramatically simplifying cross-source analysis."
-  },
-  {
-    q: "Tactics, Techniques, and Procedures (TTPs) are methods or behaviors utilized by attackers. In which framework are these categorized?",
-    opts: ["NIST 800-53","ISO 27000","CIS18","MITRE ATT&CK"],
-    ans: 3,
-    exp: "The MITRE ATT&CK framework is the industry-standard knowledge base that categorizes adversary Tactics, Techniques, and Procedures based on real-world observations. NIST 800-53 and CIS18 are security control frameworks, and ISO 27000 is an information security management standard."
-  },
-  {
-    q: "A threat hunter executed a hunt based on the following hypothesis:\n\nAs an actor, I want to plant rundll32 for proxy execution of malicious code and leverage Cobalt Strike for Command and Control.\n\nRelevant logs and artifacts such as Sysmon, netflow, IDS alerts, and EDR logs were searched, and the hunter is confident in the conclusion that Cobalt Strike is not present in the company's environment.\n\nWhich of the following best describes the outcome of this threat hunt?",
-    opts: [
-      "The threat hunt was successful because the hypothesis was not proven.",
-      "The threat hunt failed because the hypothesis was not proven.",
-      "The threat hunt failed because no malicious activity was identified.",
-      "The threat hunt was successful in providing strong evidence that the tactic and tool is not present in the environment."
-    ],
-    ans: 3,
-    exp: "A threat hunt is successful when it reaches a confident conclusion — whether it finds malicious activity or definitively rules it out. Successfully proving that a specific threat is absent is a valuable outcome, especially when thorough evidence was reviewed to reach that conclusion."
-  },
-  {
-    q: "An analyst notices that one of their servers is sending an unusually large amount of traffic, gigabytes more than normal, to a single system on the Internet. There doesn't seem to be any associated increase in incoming traffic.\n\nWhat type of threat actor activity might this represent?",
-    opts: ["Data exfiltration","Network reconnaissance","Data infiltration","Lateral movement"],
-    ans: 0,
-    exp: "Large volumes of outbound traffic to an external IP without corresponding inbound traffic is a classic data exfiltration pattern — an attacker is copying sensitive data out of the organization. Lateral movement would show internal traffic, and reconnaissance typically generates less data."
-  },
-  {
-    q: "In which phase of the Continuous Monitoring cycle are suggestions and improvements typically made?",
-    opts: ["Define and Predict","Establish and Architect","Analyze and Report","Implement and Collect"],
-    ans: 2,
-    exp: "The 'Analyze and Report' phase is where findings from monitoring are reviewed, trends are identified, and recommendations for improvements are made. This feedback loop drives enhancements back into the 'Implement and Collect' stage in the next cycle."
-  },
-  {
-    q: "An analyst is not sure that all of the potential data sources at her company are being correctly or completely utilized by Splunk and Enterprise Security. Which of the following might she suggest using, in order to perform an analysis of the data types available and some of their potential security uses?",
-    opts: ["Splunk ITSI","Security Essentials","SOAR","Splunk Intelligence Management"],
-    ans: 1,
-    exp: "Splunk Security Essentials (SSE) includes a data inventory and use-case library that helps organizations understand what data sources they have, which security detections those sources can support, and what gaps exist. It's a key tool for assessing detection coverage."
-  },
-  {
-    q: "During their shift, an analyst receives an alert about an executable being run from C:\\Windows\\Temp. Why should this be investigated further?",
-    opts: [
-      "Temp directories aren't owned by any particular user, making it difficult to track the process owner when files are executed.",
-      "Temp directories are flagged as non-executable, meaning that no files stored within can be executed, and this executable was run from that directory.",
-      "Temp directories contain the system page file and the virtual memory file, meaning the attacker can use their malware to read the in memory values of running programs.",
-      "Temp directories are world writable thus allowing attackers a place to drop, stage, and execute malware on a system without needing to worry about file permissions."
-    ],
-    ans: 3,
-    exp: "C:\\Windows\\Temp (and %TEMP%) directories are writable by all users, making them a common staging ground for attackers. Malware dropped and executed from Temp directories bypasses the need for elevated write permissions to protected system folders, which is a well-known attacker technique."
-  },
-  {
-    q: "An analyst would like to visualize threat objects across their environment and chronological risk events for a Risk Object in Incident Review. Where would they find this?",
-    opts: [
-      "Running the Risk Analysis Adaptive Response action within the Notable Event.",
-      "Via a workflow action for the Risk Investigation dashboard.",
-      "Via the Risk Analysis dashboard under the Security Intelligence tab in Enterprise Security.",
-      "Clicking the risk event count to open the Risk Event Timeline."
-    ],
-    ans: 3,
-    exp: "Within Incident Review in Splunk ES, clicking on a risk event count for a Risk Object opens the Risk Event Timeline — a chronological view of all risk-contributing events for that entity. This helps analysts understand the sequence and pattern of suspicious activities."
-  },
-  {
-    q: "A Risk Rule generates events on Suspicious Cloud Share Activity and regularly contributes to confirmed incidents from Risk Notables. An analyst realizes the raw logs these events are generated from contain information which helps them determine what might be malicious.\n\nWhat should they ask their engineer for to make their analysis easier?",
-    opts: [
-      "Create a field extraction for this information.",
-      "Add this information to the risk message.",
-      "Create another detection for this information.",
-      "Allowlist more events based on this information."
-    ],
-    ans: 0,
-    exp: "When raw log data contains useful but unparsed information, creating a field extraction allows Splunk to surface that data as a structured, searchable field. This makes it immediately visible in Notable Events and investigation workflows without requiring analysts to parse raw text manually."
-  },
-  {
-    q: "What device typically sits at a network perimeter to detect command and control and other potentially suspicious traffic?",
-    opts: [
-      "Host-based firewall",
-      "Web proxy",
-      "Endpoint Detection and Response",
-      "Intrusion Detection System"
-    ],
-    ans: 3,
-    exp: "An Intrusion Detection System (IDS) is specifically designed to monitor network traffic at the perimeter for known attack signatures and anomalies, including C2 communication patterns. A host-based firewall operates locally, a web proxy filters web traffic, and EDR monitors endpoint behavior."
-  },
-  {
-    q: "Upon investigating a report of a web server becoming unavailable, the security analyst finds that the web server's access log has the same log entry millions of times:\n\n147.186.119.200 - - [28/Jul/2023:12:04:13 -0300] \"GET /login/ HTTP/1.0\" 200 3733\n\nWhat kind of attack is occurring?",
-    opts: [
-      "Denial of Service Attack",
-      "Distributed Denial of Service Attack",
-      "Cross-Site Scripting Attack",
-      "Database Injection Attack"
-    ],
-    ans: 1,
-    exp: "Millions of identical requests overwhelming a web server indicate a volumetric attack. The scale of the attack (millions of requests) suggests it originates from multiple distributed sources (a botnet), making this a Distributed Denial of Service (DDoS) attack rather than a single-source DoS."
-  },
-  {
-    q: "According to David Bianco's Pyramid of Pain, which indicator type is least effective when used in continuous monitoring?",
-    opts: ["Domain names","TTPs","NetworM-lost artifacts","Hash values"],
-    ans: 3,
-    exp: "At the base of Bianco's Pyramid of Pain, hash values are the easiest for attackers to change (recompile or modify the malware) and therefore the least effective for defenders. TTPs are at the top — the hardest for attackers to change and most effective for defenders."
-  }
-];
-
-// ─── SHUFFLE SETTINGS ───────────────────────────────────────────────────────
-let shuffleMode     = false;
-let shuffleQuestions = true;   // whether to shuffle question order
-let shuffleChoices   = true;   // whether to shuffle answer choices
-
-// ─── ACTIVE QUESTION SET (built on each shuffle apply) ──────────────────────
-let questions = masterQuestions.slice(); // starts as ordered copy
-
-// ─── STATE ──────────────────────────────────────────────────────────────────
-let current = 0;
-let userAnswers = new Array(questions.length).fill(null);
-let score = 0;
-let answered = 0;
-
-// ─── FISHER-YATES SHUFFLE ───────────────────────────────────────────────────
-function shuffleArray(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// ─── BUILD ACTIVE QUESTION SET ──────────────────────────────────────────────
-function buildQuestionSet() {
-  let pool = masterQuestions.map((q, origIdx) => ({
-    origIdx,
-    q: q.q,
-    opts: q.opts.slice(),
-    ans: q.ans,
-    exp: q.exp
-  }));
-
-  // Shuffle question order
-  if (shuffleMode && shuffleQuestions) {
-    pool = shuffleArray(pool);
+  // Smooth scroll to section
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.target.classList.add('active');
   }
 
-  // Shuffle choices per question
-  if (shuffleMode && shuffleChoices) {
-    pool = pool.map(q => {
-      const correctText = q.opts[q.ans];
-      const indices = q.opts.map((_, i) => i);
-      const shuffledIndices = shuffleArray(indices);
-      const newOpts = shuffledIndices.map(i => q.opts[i]);
-      const newAns = newOpts.indexOf(correctText);
-      return { ...q, opts: newOpts, ans: newAns };
-    });
-  }
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.body.scrollHeight - window.innerHeight;
+    const pct = (scrolled / total) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('back-top').classList.toggle('visible', scrolled > 400);
+  });
 
-  return pool;
-}
-
-// ─── SHUFFLE TOGGLE UI ───────────────────────────────────────────────────────
-function toggleShuffle() {
-  shuffleMode = !shuffleMode;
-  const toggle = document.getElementById('shuffle-toggle');
-  const text   = document.getElementById('toggle-text');
-  const reshuffleBtn = document.getElementById('btn-reshuffle');
-  const optBtns = document.querySelectorAll('.shuffle-opt-btn');
-
-  if (shuffleMode) {
-    toggle.classList.add('on');
-    text.textContent = 'ON';
-    reshuffleBtn.style.display = 'inline';
-    optBtns.forEach(b => b.disabled = false);
-  } else {
-    toggle.classList.remove('on');
-    text.textContent = 'OFF';
-    reshuffleBtn.style.display = 'none';
-    optBtns.forEach(b => b.disabled = false);
-  }
-  applyShuffleAndRestart();
-}
-
-function toggleShuffleOpt(type) {
-  if (type === 'questions') {
-    shuffleQuestions = !shuffleQuestions;
-    document.getElementById('opt-questions').classList.toggle('active', shuffleQuestions);
-  } else {
-    shuffleChoices = !shuffleChoices;
-    document.getElementById('opt-choices').classList.toggle('active', shuffleChoices);
-  }
-  if (shuffleMode) applyShuffleAndRestart();
-}
-
-function applyShuffleAndRestart() {
-  questions = buildQuestionSet();
-  userAnswers = new Array(questions.length).fill(null);
-  score = 0;
-  answered = 0;
-  current = 0;
-
-  // Update total label
-  document.querySelector('.subtitle').textContent =
-    `// ${questions.length} questions · Cybersecurity Defense Analyst` +
-    (shuffleMode ? ' · SHUFFLED' : '');
-
-  renderQuestion(0);
-}
-
-// ─── RENDER ─────────────────────────────────────────────────────────────────
-function renderQuestion(idx) {
-  const q = questions[idx];
-  const label = `QUESTION ${String(idx+1).padStart(2,'0')}`;
-  const pill  = shuffleMode
-    ? `<span class="shuffle-pill">shuffled</span>`
-    : '';
-  document.getElementById('q-num-label').innerHTML = label + pill;
-  document.getElementById('q-current').textContent = idx + 1;
-
-  // Format question text
-  let qText = q.q;
-  qText = qText.replace(/\n((?:index=|eval |stats |rex |makeresults|147\.\d|\|)[^\n]+)/g,
-    (m, p1) => `\n<code>${p1}</code>`);
-  qText = qText.replace(/\n(\d+\. )/g, '\n$1');
-  document.getElementById('q-text').innerHTML = qText.split('\n').join('<br>');
-
-  // Options
-  const optsEl = document.getElementById('options');
-  optsEl.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  q.opts.forEach((opt, i) => {
-    const div = document.createElement('div');
-    div.className = 'option';
-    div.dataset.idx = i;
-    div.innerHTML = `<span class="option-letter">${letters[i]}.</span><span>${opt}</span>`;
-
-    if (userAnswers[idx] !== null) {
-      div.classList.add('locked');
-      if (i === q.ans)            div.classList.add('correct');
-      else if (i === userAnswers[idx]) div.classList.add('wrong');
-    } else {
-      div.onclick = () => selectAnswer(idx, i);
+  // Search
+  document.getElementById('search-input').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.card');
+    if (!q) {
+      cards.forEach(c => { c.style.display = ''; c.innerHTML = c.innerHTML.replace(/<mark class="highlight">(.*?)<\/mark>/g, '$1'); });
+      return;
     }
-    optsEl.appendChild(div);
+    cards.forEach(card => {
+      const text = card.innerText.toLowerCase();
+      card.style.display = text.includes(q) ? '' : 'none';
+    });
   });
 
-  // Feedback
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback';
-  fb.innerHTML = '';
-  if (userAnswers[idx] !== null) {
-    const correct = userAnswers[idx] === q.ans;
-    fb.className = 'feedback ' + (correct ? 'correct-fb' : 'wrong-fb');
-    fb.innerHTML = (!correct
-      ? `Correct answer: <strong>${letters[q.ans]}. ${q.opts[q.ans]}</strong><br><br>`
-      : '') + q.exp;
-  }
-
-  // Nav
-  document.getElementById('btn-prev').disabled = idx === 0;
-  document.getElementById('btn-next').disabled =
-    userAnswers[idx] === null || idx === questions.length - 1;
-  document.getElementById('btn-skip').style.display =
-    (userAnswers[idx] === null && idx < questions.length - 1) ? 'inline' : 'none';
-
-  // Progress
-  const pct = ((idx + 1) / questions.length * 100).toFixed(1);
-  document.getElementById('prog-bar').style.width = pct + '%';
-  document.getElementById('score-live').textContent  = score;
-  document.getElementById('answered-live').textContent = answered;
-
-  // Card animation
-  const card = document.getElementById('card');
-  card.style.animation = 'none';
-  card.offsetHeight;
-  card.style.animation = 'fadeSlide 0.3s ease';
-}
-
-// ─── INTERACTIONS ────────────────────────────────────────────────────────────
-function selectAnswer(qIdx, choiceIdx) {
-  if (userAnswers[qIdx] !== null) return;
-  userAnswers[qIdx] = choiceIdx;
-  answered++;
-  if (choiceIdx === questions[qIdx].ans) score++;
-  renderQuestion(qIdx);
-}
-
-function goQuestion(idx) {
-  if (idx < 0 || idx >= questions.length) return;
-  current = idx;
-  renderQuestion(current);
-}
-
-function skipQuestion() {
-  if (current < questions.length - 1) goQuestion(current + 1);
-}
-
-// ─── FINISH ──────────────────────────────────────────────────────────────────
-function finishQuiz() {
-  document.getElementById('quiz-screen').style.display = 'none';
-  const rs = document.getElementById('results-screen');
-  rs.style.display = 'block';
-
-  const total   = questions.length;
-  const skipped = total - answered;
-  const pct     = Math.round(score / total * 100);
-  const passing = pct >= 70;
-
-  document.getElementById('score-pct').textContent   = pct + '%';
-  document.getElementById('r-correct').textContent   = score;
-  document.getElementById('r-wrong').textContent     = answered - score;
-  document.getElementById('r-skipped').textContent   = skipped;
-  document.getElementById('result-title').textContent = passing ? 'Well Done!' : 'Keep Practicing';
-  document.getElementById('result-sub').textContent  =
-    `// ${score} correct out of ${total} questions` +
-    (shuffleMode ? ' · shuffled mode' : '');
-
-  const ring = document.getElementById('score-ring');
-  ring.classList.toggle('bad', !passing);
-  setTimeout(() => {
-    const circumference = 2 * Math.PI * 70;
-    const fill = (pct / 100) * circumference;
-    document.getElementById('score-circle').style.strokeDasharray = `${fill} ${circumference}`;
-  }, 100);
-
-  // Review missed questions
-  const rl = document.getElementById('review-list');
-  rl.innerHTML = '<h3 style="font-size:16px;letter-spacing:2px;margin-bottom:16px;color:var(--muted);font-family:var(--mono);">// Review Missed Questions</h3>';
-  const letters = ['A','B','C','D'];
-  let hasMissed = false;
-
-  questions.forEach((q, i) => {
-    const ua = userAnswers[i];
-    if (ua === q.ans) return;
-    hasMissed = true;
-    const div = document.createElement('div');
-    div.className = 'review-item ' + (ua === null ? 'r-wrong' : 'r-wrong');
-    const shortQ = q.q.split('\n')[0].substring(0, 100) + (q.q.length > 100 ? '...' : '');
-    div.innerHTML = `
-      <div class="review-q-num">Q${String(i+1).padStart(2,'0')} · ${ua === null ? 'SKIPPED' : 'INCORRECT'}</div>
-      <div class="review-q-text">${shortQ}</div>
-      <div class="review-answers">
-        ${ua !== null ? `<span class="ry">Your answer: ${letters[ua]}. ${q.opts[ua]}</span><br>` : ''}
-        <span class="rc">✔ Correct: ${letters[q.ans]}. ${q.opts[q.ans]}</span>
-      </div>`;
-    rl.appendChild(div);
-  });
-
-  if (!hasMissed) {
-    rl.innerHTML += '<p style="text-align:center;color:var(--correct);font-family:var(--mono);font-size:13px;">// Perfect score — no questions to review!</p>';
-  }
-}
-
-// ─── RESTART ─────────────────────────────────────────────────────────────────
-function restartQuiz() {
-  // Re-apply shuffle if active, otherwise reset to original order
-  questions = buildQuestionSet();
-  userAnswers = new Array(questions.length).fill(null);
-  score = 0;
-  answered = 0;
-  current = 0;
-
-  document.getElementById('results-screen').style.display = 'none';
-  document.getElementById('quiz-screen').style.display = 'block';
-  document.getElementById('score-circle').style.strokeDasharray = '0 440';
-  renderQuestion(0);
-}
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-renderQuestion(0);
+  // Active nav on scroll
+  const sections = document.querySelectorAll('.section-block');
+  const navItems = document.querySelectorAll('.nav-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navItems.forEach(n => {
+          n.classList.toggle('active', n.getAttribute('onclick') && n.getAttribute('onclick').includes(id));
+        });
+      }
+    });
+  }, { threshold: 0.25 });
+  sections.forEach(s => observer.observe(s));
 </script>
 </body>
 </html>
